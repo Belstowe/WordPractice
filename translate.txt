@@ -1,0 +1,19 @@
+text текст
+test тест
+part часть
+root корень
+tree дерево
+cat кот
+past прошлое
+dog собака
+chair стул
+table стол
+home дом
+family семья
+sister сестра 
+brother брат
+kitchen кухня
+way путь
+dark тьма
+car машина
+
