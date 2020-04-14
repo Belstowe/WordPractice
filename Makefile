@@ -1,2 +1,7 @@
-    rezult: main.c
-	gcc -Wall -o rezult main.c func.c
+C = gcc
+flag = -Wall -o
+
+all:
+	mkdir -p bin
+	$(C) $(flag) ./bin/result ./src/*.c
+	cp ./src/translate.txt ./bin/
