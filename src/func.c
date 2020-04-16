@@ -1,4 +1,4 @@
-#define filename "translate.txt"
+#define MAX_STRING_SIZE 256
 
 #include <ctype.h>
 #include <stdint.h>
@@ -10,26 +10,60 @@
 
 #include "func.h"
 
+extern char* filename;
+extern size_t wordnum, tasks;
+
 int getrand(int min, int max)
 {
     return (double)rand() / (RAND_MAX + 1.0) * (max - min) + min;
 }
 
+uint32_t* random_order(size_t num) {
+    uint32_t* temp_arr = malloc(num*sizeof(int));
+    if (temp_arr == NULL)
+        return NULL;
+
+    for (uint32_t i = 0; i < num; i++)
+        temp_arr[i] = i;
+
+    for (uint32_t i = 0; i < num - 1; i++) {
+        uint32_t j = (uint32_t)getrand(i, num);
+        temp_arr[j] += temp_arr[i];
+        temp_arr[i] = temp_arr[j] - temp_arr[i];
+        temp_arr[j] -= temp_arr[i];
+    }
+
+    return temp_arr;
+}
+
 typedef struct {
-    char first[200];
-    char second[200];
+    char first[MAX_STRING_SIZE];
+    char second[MAX_STRING_SIZE];
 } Words;
 
-void ReadWords(char* IFILE, Words* w, int q)
-{
-    int i;
+void word_count(char* IFILE) {
+    wordnum = 0;
+    Words* nulwords = malloc(sizeof(Words));
     FILE* f;
     if ((f = fopen(IFILE, "r")) == NULL) {
         perror("fopen");
         exit(1);
     }
-    for (i = 0; i < 18; i++)
+    while (fscanf(f, "%s %s", nulwords->first, nulwords->second) == 2)
+        wordnum++;
+    fclose(f);
+};
+
+void read_words(char* IFILE, Words* w)
+{
+    FILE* f;
+    if ((f = fopen(IFILE, "r")) == NULL) {
+        perror("fopen");
+        exit(1);
+    }
+    for (size_t i = 0; i < wordnum; i++)
         fscanf(f, "%s %s", ((w[i]).first), ((w[i]).second));
+    fclose(f);
 }
 
 int sum(char* mass, int i, Words* w, int q)
@@ -37,19 +71,19 @@ int sum(char* mass, int i, Words* w, int q)
     int k = 0;
     if (q == 1) {
         if (strcmp(mass, w[i].second) == 0) {
-            k = k + 5;
-            printf("True\t");
-        } else {
-            printf("Falls\t");
-        }
+            k++;
+            printf("ВЕРНО.\n");
+        } else
+            printf("НЕВЕРНО.\n"\
+                   "Правильно: %s.\n",w[i].second);
     }
     if (q == 2) {
         if (strcmp(mass, w[i].first) == 0) {
-            k = k + 5;
-            printf("True\t");
-        } else {
-            printf("Falls\t");
-        }
+            k++;
+            printf("ВЕРНО.\n");
+        } else
+            printf("НЕВЕРНО.\n"\
+                   "Правильно: %s.\n",w[i].first);
     }
 
     return k;
@@ -57,30 +91,38 @@ int sum(char* mass, int i, Words* w, int q)
 
 int check()
 {
-    int i, j, q, k = 0;
-    printf("Выберите анг-рус-1\t рус-англ-2\t введите цифру\n");
-    scanf("%d", &q);
+    int q, k = 0;
+    printf("Выберите:\n"\
+           "1. С английского на русский.\n"\
+           "2. С русского на английский.\n"\
+           "Для выбора введите нужную цифру.\n"\
+           "Если вы ошиблись программой или хотите что-то исправить, выйдите из программы, введя любой другой символ.\n");
+    if (scanf("%d", &q) == 0)
+        return 0;
+    else if ((q > 2) || (q == 0))
+        return 0;
 
-    char mass2[100];
-    Words w[18];
-    ReadWords(filename, w, q);
+    char input[MAX_STRING_SIZE];
+    word_count(filename);
+    Words w[wordnum];
+    read_words(filename, w);
 
     if (q == 1) {
-        for (j = 0; j < 10; j++) {
-            i = getrand(1, 17);
-            printf("\n%d I: %s\t\n", j + 1, w[i].first);
-            printf("Введите рус \n");
-            scanf("%s", mass2);
-            k += sum(mass2, i, w, q);
+        for (int j = 0; j < tasks; j++) {
+            int i = getrand(0, wordnum-1);
+            printf("\n%d:\t %s\n", j + 1, w[i].first);
+            printf("Введите перевод на русский:\t ");
+            scanf("%s", input);
+            k += sum(input, i, w, q);
         }
     }
     if (q == 2) {
-        for (j = 0; j < 10; j++) {
-            i = getrand(1, 17);
-            printf("\n%d I: %s\t\n", j + 1, w[i].second);
-            printf("Введите англ\n");
-            scanf("%s", mass2);
-            k += sum(mass2, i, w, q);
+        for (int j = 0; j < tasks; j++) {
+            int i = getrand(0, wordnum-1);
+            printf("\n%d:\t %s\n", j + 1, w[i].second);
+            printf("Введите перевод на английский:\t ");
+            scanf("%s", input);
+            k += sum(input, i, w, q);
         }
     }
   
