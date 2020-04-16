@@ -32,6 +32,13 @@ int main(int argc, char* argv[])
 	else
 		filename = "translate.txt";
 
+	FILE* f = fopen(filename, "r");
+	if (f == NULL) {
+		printf("ОШИБКА. Проблемы с доступом к файлу '%s'. Существует ли он вообще?\n",filename);
+		return -1;
+	}
+	fclose(f);
+
     int k = check();
     printf("\nРезультат:\t %d/%zu.\n", k, tasks);
 
