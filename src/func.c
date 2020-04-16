@@ -18,16 +18,26 @@ int getrand(int min, int max)
     return (double)rand() / (RAND_MAX + 1.0) * (max - min) + min;
 }
 
-uint32_t* random_order(size_t num) {
-    uint32_t* temp_arr = malloc(num*sizeof(int));
+/* random_order
+* Создаёт массив упорядоченных натуральных чисел от min по max, затем разбрасывает эти числа случайным образом.
+* Возвращает получившийся массив размером (max - min + 1).
+? Используется, чтобы избежать повторений в выборе элементов.
+! max обязательно должен быть больше min, иначе функция вернёт NULL.
+*/
+int* random_order(const int min, const int max) {
+    if (max - min <= 0)
+        return NULL;
+
+    const size_t range = max - min + 1;
+    int* temp_arr = malloc(range*sizeof(int));
     if (temp_arr == NULL)
         return NULL;
 
-    for (uint32_t i = 0; i < num; i++)
-        temp_arr[i] = i;
+    for (uint32_t i = 0; i < range; i++)
+        temp_arr[i] = min + i;
 
-    for (uint32_t i = 0; i < num - 1; i++) {
-        uint32_t j = (uint32_t)getrand(i, num);
+    for (uint32_t i = 0; i < range - 1; i++) {
+        uint32_t j = (uint32_t)getrand(i, range);
         temp_arr[j] += temp_arr[i];
         temp_arr[i] = temp_arr[j] - temp_arr[i];
         temp_arr[j] -= temp_arr[i];
@@ -92,7 +102,8 @@ int sum(char* mass, int i, Words* w, int q)
 int check()
 {
     int q, k = 0;
-    printf("Выберите:\n"\
+    printf("Добро пожаловать в Word Practice, программу для заучивания иноязычных слов!\n\n"\
+           "Выберите:\n"\
            "1. С английского на русский.\n"\
            "2. С русского на английский.\n"\
            "Для выбора введите нужную цифру.\n"\
@@ -102,27 +113,48 @@ int check()
     else if ((q > 2) || (q == 0))
         return 0;
 
+    srand(time(0));
     char input[MAX_STRING_SIZE];
     word_count(filename);
     Words w[wordnum];
     read_words(filename, w);
 
     if (q == 1) {
+        printf("Количество слов в списке: %zu.\n"\
+               "Введите количество номеров (либо нажмите Enter, чтобы пройти все слова в списке): ",\
+               wordnum);
+        if (scanf("%zu",&tasks) == 0)
+            tasks = wordnum;
+        else if (tasks > wordnum) {
+            printf("ОШИБКА: Вы не можете указать количество попыток выше количества слов!\n");
+            return 0;
+        }
+
+        int* list = random_order(0,wordnum-1);
         for (int j = 0; j < tasks; j++) {
-            int i = getrand(0, wordnum-1);
-            printf("\n%d:\t %s\n", j + 1, w[i].first);
+            printf("\n%d:\t %s\n", j+1, w[list[j]].first);
             printf("Введите перевод на русский:\t ");
             scanf("%s", input);
-            k += sum(input, i, w, q);
+            k += sum(input, list[j], w, q);
         }
     }
     if (q == 2) {
+        printf("Количество слов в списке: %zu.\n"\
+               "Введите количество номеров (либо нажмите Enter, чтобы пройти все слова в списке): ",\
+               wordnum);
+        if (scanf("%zu",&tasks) == 0)
+            tasks = wordnum;
+        else if (tasks > wordnum) {
+            printf("ОШИБКА: Вы не можете указать количество попыток выше количества слов!\n");
+            return 0;
+        }
+
+        int* list = random_order(0,wordnum-1);
         for (int j = 0; j < tasks; j++) {
-            int i = getrand(0, wordnum-1);
-            printf("\n%d:\t %s\n", j + 1, w[i].second);
+            printf("\n%d:\t %s\n", j+1, w[list[j]].second);
             printf("Введите перевод на английский:\t ");
             scanf("%s", input);
-            k += sum(input, i, w, q);
+            k += sum(input, list[j], w, q);
         }
     }
   
