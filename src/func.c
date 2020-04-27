@@ -7,7 +7,8 @@
 #include <string.h>
 #include <sys/time.h>
 #include <time.h>
-
+#include <ncursesw/curses.h>
+#include <locale.h>
 #include "func.h"
 
 extern char* filename;
@@ -82,81 +83,66 @@ int sum(char* mass, int i, Words* w, int q)
     if (q == 1) {
         if (strcmp(mass, w[i].second) == 0) {
             k++;
-            printf("ВЕРНО.\n");
+            printw("ВЕРНО.\n");
         } else
-            printf("НЕВЕРНО.\n"\
+            printw("НЕВЕРНО.\n"\
                    "Правильно: %s.\n",w[i].second);
     }
     if (q == 2) {
         if (strcmp(mass, w[i].first) == 0) {
             k++;
-            printf("ВЕРНО.\n");
+            printw("ВЕРНО.\n");
         } else
-            printf("НЕВЕРНО.\n"\
+            printw("НЕВЕРНО.\n"\
                    "Правильно: %s.\n",w[i].first);
     }
 
     return k;
 }
 
-int check()
+void eng(int *lvl, int *var)
 {
-    int q, k = 0;
-    printf("Добро пожаловать в Word Practice, программу для заучивания иноязычных слов!\n\n"\
-           "Выберите:\n"\
-           "1. С английского на русский.\n"\
-           "2. С русского на английский.\n"\
-           "Для выбора введите нужную цифру.\n"\
-           "Если вы ошиблись программой или хотите что-то исправить, выйдите из программы, введя любой другой символ.\n");
-    if (scanf("%d", &q) == 0)
-        return 0;
-    else if ((q > 2) || (q == 0))
-        return 0;
-
+    int q=1, k = 0;
+    
     srand(time(0));
     char input[MAX_STRING_SIZE];
     word_count(filename);
     Words w[wordnum];
     read_words(filename, w);
 
-    if (q == 1) {
-        printf("Количество слов в списке: %zu.\n"\
-               "Введите количество номеров (либо нажмите Enter, чтобы пройти все слова в списке): ",\
-               wordnum);
-        if (scanf("%zu",&tasks) == 0)
-            tasks = wordnum;
-        else if (tasks > wordnum) {
-            printf("ОШИБКА: Вы не можете указать количество попыток выше количества слов!\n");
-            return 0;
-        }
-
-        int* list = random_order(0,wordnum-1);
-        for (int j = 0; j < tasks; j++) {
-            printf("\n%d:\t %s\n", j+1, w[list[j]].first);
-            printf("Введите перевод на русский:\t ");
-            scanf("%s", input);
-            k += sum(input, list[j], w, q);
-        }
+    int* list = random_order(0,wordnum-1);
+    for (int j = 0; j < *lvl; j++) {
+	printw("\n%d:\t %s\n", j+1, w[list[j]].first);
+	printw("Введите перевод на русский:\t ");
+        scanw("%s", input);
+        k += sum(input, list[j], w, q);
     }
-    if (q == 2) {
-        printf("Количество слов в списке: %zu.\n"\
-               "Введите количество номеров (либо нажмите Enter, чтобы пройти все слова в списке): ",\
-               wordnum);
-        if (scanf("%zu",&tasks) == 0)
-            tasks = wordnum;
-        else if (tasks > wordnum) {
-            printf("ОШИБКА: Вы не можете указать количество попыток выше количества слов!\n");
-            return 0;
-        }
-
-        int* list = random_order(0,wordnum-1);
-        for (int j = 0; j < tasks; j++) {
-            printf("\n%d:\t %s\n", j+1, w[list[j]].second);
-            printf("Введите перевод на английский:\t ");
-            scanf("%s", input);
-            k += sum(input, list[j], w, q);
-        }
+    printw("\nПравильных слов: %d\n",k);
+    getch();
+    *lvl=0;
+    *var=0;
     }
-  
-    return k;
+
+void rus (int *lvl, int *var){
+
+    int q=2, k = 0;
+    srand(time(0));
+    char input[MAX_STRING_SIZE];
+    word_count(filename);
+    Words w[wordnum];
+    read_words(filename, w);
+
+    int* list = random_order(0,wordnum-1);
+    for (int j = 0; j < *lvl; j++) {
+	printw("\n%d:\t %s\n", j+1, w[list[j]].second);
+        printw("Input translate on English:\t ");
+        scanw("%s", input);
+	k += sum(input, list[j], w, q);
+    }
+     printw("\nПравильных слов: %d\n",k);
+    getch();
+    *lvl=0;
+    *var=0;
+
 }
+
