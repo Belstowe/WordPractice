@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <string.h>
+#include <ncursesw/curses.h>
+#include <locale.h>
+#include "curses.h"
 #include "func.h"
 
 size_t wordnum = 0; //Количество слов в списке
@@ -39,8 +42,21 @@ int main(int argc, char* argv[])
 	}
 	fclose(f);
 
-    int k = check();
-    printf("\nРезультат:\t %d/%zu.\n", k, tasks);
+    
+    setlocale(LC_ALL, "");
+    initscr();
+    scrollok(stdscr, TRUE);
+    int item;
+    int lvl = 0;
+    int var = 0;
+    while (1) {
+	Menu(&item);
+	if (item == 1) Play(&lvl, &var);
+	if (item == 2) {
+	    endwin();
+	    return 0;
+	}
+    }
 
     return 0;
 }
