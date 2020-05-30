@@ -3,7 +3,7 @@
 #include "func.h"
 #include <ctype.h>
 #include <locale.h>
-#include <ncursesw/curses.h>
+#include <ncurses.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>

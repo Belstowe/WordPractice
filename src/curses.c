@@ -1,5 +1,5 @@
 #include "curses.h"
-#include <ncursesw/curses.h>
+#include <ncurses.h>
 
 #include "func.h"
 #include <locale.h>

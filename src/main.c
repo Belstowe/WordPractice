@@ -1,7 +1,7 @@
 #include "curses.h"
 #include "func.h"
 #include <locale.h>
-#include <ncursesw/curses.h>
+#include <ncurses.h>
 #include <stdio.h>
 #include <string.h>
 
