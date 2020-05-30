@@ -1,12 +1,15 @@
-#ifndef TheFunc
-#define TheFunc
+#ifndef FUNC_H
+#define FUNC_H
+
+#define MAX_STRING_SIZE 256
+
+typedef struct {
+    char translate_from[MAX_STRING_SIZE];
+    char translate_to[MAX_STRING_SIZE];
+} Words;
 
 int get_random_int(int min, int max);
-// uint32_t* random_order(size_t num);
-// void file_word_pairs_count(char* IFILE);
-// void file_word_pairs_read(char* IFILE, Words* w);
-// int sum(char* mass, int i, Words* w, int q);
-void eng(int* lvl, int* var);
-void rus(int* lvl, int* var);
+int* random_order(const int min, const int max);
+Words* wordlist_form(char* IFILE, int** order);
 
 #endif
