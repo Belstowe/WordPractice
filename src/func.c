@@ -14,9 +14,12 @@
 extern char* filename;
 extern size_t wordnum, tasks;
 
-int getrand(int min, int max)
+/* get_random_int
+ * Возвращает целое число в диапазоне от min до max (включая).
+ */
+int get_random_int(int min, int max)
 {
-    return (double)rand() / (RAND_MAX + 1.0) * (max - min) + min;
+    return (double)rand() / (RAND_MAX + 1.0) * (max - min + 1) + min;
 }
 
 /* random_order
@@ -40,7 +43,7 @@ int* random_order(const int min, const int max)
         temp_arr[i] = min + i;
 
     for (uint32_t i = 0; i < range - 1; i++) {
-        uint32_t j = (uint32_t)getrand(i, range);
+        uint32_t j = (uint32_t)get_random_int(i, range - 1);
         temp_arr[j] += temp_arr[i];
         temp_arr[i] = temp_arr[j] - temp_arr[i];
         temp_arr[j] -= temp_arr[i];
