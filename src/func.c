@@ -14,6 +14,11 @@
 extern char* filename;
 extern size_t wordnum, tasks;
 
+typedef struct {
+    char first[MAX_STRING_SIZE];
+    char second[MAX_STRING_SIZE];
+} Words;
+
 /* get_random_int
  * Возвращает целое число в диапазоне от min до max (включая).
  */
@@ -23,12 +28,12 @@ int get_random_int(int min, int max)
 }
 
 /* random_order
-* Создаёт массив упорядоченных натуральных чисел от min по max, затем
+ * Создаёт массив упорядоченных натуральных чисел от min по max, затем
 разбрасывает эти числа случайным образом.
-* Возвращает получившийся массив размером (max - min + 1).
-? Используется, чтобы избежать повторений в выборе элементов.
-! max обязательно должен быть больше min, иначе функция вернёт NULL.
-*/
+ * Возвращает получившийся массив размером (max - min + 1).
+ ? Используется, чтобы избежать повторений в выборе элементов.
+ ! max обязательно должен быть больше min, иначе функция вернёт NULL.
+ */
 int* random_order(const int min, const int max)
 {
     if (max - min <= 0)
@@ -52,12 +57,10 @@ int* random_order(const int min, const int max)
     return temp_arr;
 }
 
-typedef struct {
-    char first[MAX_STRING_SIZE];
-    char second[MAX_STRING_SIZE];
-} Words;
-
-void word_count(char* IFILE)
+/* file_word_pairs_count
+ * Считывает пары слов в списке и записывает их в переменную wordnum.
+ */
+void file_word_pairs_count(char* IFILE)
 {
     wordnum = 0;
     Words* nulwords = malloc(sizeof(Words));
@@ -69,7 +72,7 @@ void word_count(char* IFILE)
     while (fscanf(f, "%s %s", nulwords->first, nulwords->second) == 2)
         wordnum++;
     fclose(f);
-};
+}
 
 void read_words(char* IFILE, Words* w)
 {
@@ -114,7 +117,7 @@ void eng(int* lvl, int* var)
 
     srand(time(0));
     char input[MAX_STRING_SIZE];
-    word_count(filename);
+    file_word_pairs_count(filename);
     Words w[wordnum];
     read_words(filename, w);
 
@@ -136,7 +139,7 @@ void rus(int* lvl, int* var)
     int q = 2, k = 0;
     srand(time(0));
     char input[MAX_STRING_SIZE];
-    word_count(filename);
+    file_word_pairs_count(filename);
     Words w[wordnum];
     read_words(filename, w);
 
