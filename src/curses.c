@@ -1,8 +1,7 @@
 #include "curses.h"
-#include <ncurses.h>
-
 #include "func.h"
-#include <locale.h>
+
+#include <ncurses.h>
 #include <string.h>
 
 extern char* filename;

@@ -1,13 +1,7 @@
 #include "func.h"
-#include <ctype.h>
-#include <locale.h>
-#include <ncurses.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <sys/time.h>
-#include <time.h>
 
 extern size_t wordnum, tasks;
 
