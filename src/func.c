@@ -69,20 +69,27 @@ void file_word_pairs_count(char* IFILE)
         perror("fopen");
         exit(1);
     }
+
     while (fscanf(f, "%s %s", nulwords->first, nulwords->second) == 2)
         wordnum++;
+
     fclose(f);
 }
 
-void read_words(char* IFILE, Words* w)
+/* file_word_pairs_read
+ * Читает пары слов из списка и заносит их в массив пар слов words.
+ */
+void file_word_pairs_read(char* IFILE, Words* words)
 {
     FILE* f;
     if ((f = fopen(IFILE, "r")) == NULL) {
         perror("fopen");
         exit(1);
     }
+
     for (size_t i = 0; i < wordnum; i++)
-        fscanf(f, "%s %s", ((w[i]).first), ((w[i]).second));
+        fscanf(f, "%s %s", ((words[i]).first), ((words[i]).second));
+
     fclose(f);
 }
 
@@ -119,7 +126,7 @@ void eng(int* lvl, int* var)
     char input[MAX_STRING_SIZE];
     file_word_pairs_count(filename);
     Words w[wordnum];
-    read_words(filename, w);
+    file_word_pairs_read(filename, w);
 
     int* list = random_order(0, wordnum - 1);
     for (int j = 0; j < *lvl; j++) {
@@ -141,7 +148,7 @@ void rus(int* lvl, int* var)
     char input[MAX_STRING_SIZE];
     file_word_pairs_count(filename);
     Words w[wordnum];
-    read_words(filename, w);
+    file_word_pairs_read(filename, w);
 
     int* list = random_order(0, wordnum - 1);
     for (int j = 0; j < *lvl; j++) {
