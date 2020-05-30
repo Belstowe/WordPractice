@@ -1,0 +1,13 @@
+language: c
+
+os: linux
+
+compiler:
+    - clang
+    - gcc
+
+script:
+    - git ls-files src/*.c src/*.h | xargs clang-format -i && git diff --exit-code
+    - make
+
+dist: xenial

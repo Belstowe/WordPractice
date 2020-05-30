@@ -1,15 +1,15 @@
 #define MAX_STRING_SIZE 256
 
+#include "func.h"
 #include <ctype.h>
+#include <locale.h>
+#include <ncurses.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
 #include <time.h>
-#include <ncursesw/curses.h>
-#include <locale.h>
-#include "func.h"
 
 extern char* filename;
 extern size_t wordnum, tasks;
@@ -20,17 +20,19 @@ int getrand(int min, int max)
 }
 
 /* random_order
-* Создаёт массив упорядоченных натуральных чисел от min по max, затем разбрасывает эти числа случайным образом.
+* Создаёт массив упорядоченных натуральных чисел от min по max, затем
+разбрасывает эти числа случайным образом.
 * Возвращает получившийся массив размером (max - min + 1).
 ? Используется, чтобы избежать повторений в выборе элементов.
 ! max обязательно должен быть больше min, иначе функция вернёт NULL.
 */
-int* random_order(const int min, const int max) {
+int* random_order(const int min, const int max)
+{
     if (max - min <= 0)
         return NULL;
 
     const size_t range = max - min + 1;
-    int* temp_arr = malloc(range*sizeof(int));
+    int* temp_arr = malloc(range * sizeof(int));
     if (temp_arr == NULL)
         return NULL;
 
@@ -52,7 +54,8 @@ typedef struct {
     char second[MAX_STRING_SIZE];
 } Words;
 
-void word_count(char* IFILE) {
+void word_count(char* IFILE)
+{
     wordnum = 0;
     Words* nulwords = malloc(sizeof(Words));
     FILE* f;
@@ -85,64 +88,64 @@ int sum(char* mass, int i, Words* w, int q)
             k++;
             printw("ВЕРНО.\n");
         } else
-            printw("НЕВЕРНО.\n"\
-                   "Правильно: %s.\n",w[i].second);
+            printw("НЕВЕРНО.\n"
+                   "Правильно: %s.\n",
+                   w[i].second);
     }
     if (q == 2) {
         if (strcmp(mass, w[i].first) == 0) {
             k++;
             printw("ВЕРНО.\n");
         } else
-            printw("НЕВЕРНО.\n"\
-                   "Правильно: %s.\n",w[i].first);
+            printw("НЕВЕРНО.\n"
+                   "Правильно: %s.\n",
+                   w[i].first);
     }
 
     return k;
 }
 
-void eng(int *lvl, int *var)
+void eng(int* lvl, int* var)
 {
-    int q=1, k = 0;
-    
+    int q = 1, k = 0;
+
     srand(time(0));
     char input[MAX_STRING_SIZE];
     word_count(filename);
     Words w[wordnum];
     read_words(filename, w);
 
-    int* list = random_order(0,wordnum-1);
+    int* list = random_order(0, wordnum - 1);
     for (int j = 0; j < *lvl; j++) {
-	printw("\n%d:\t %s\n", j+1, w[list[j]].first);
-	printw("Введите перевод на русский:\t ");
+        printw("\n%d:\t %s\n", j + 1, w[list[j]].first);
+        printw("Введите перевод на русский:\t ");
         scanw("%s", input);
         k += sum(input, list[j], w, q);
     }
-    printw("\nПравильных слов: %d\n",k);
+    printw("\nПравильных слов: %d\n", k);
     getch();
-    *lvl=0;
-    *var=0;
-    }
+    *lvl = 0;
+    *var = 0;
+}
 
-void rus (int *lvl, int *var){
-
-    int q=2, k = 0;
+void rus(int* lvl, int* var)
+{
+    int q = 2, k = 0;
     srand(time(0));
     char input[MAX_STRING_SIZE];
     word_count(filename);
     Words w[wordnum];
     read_words(filename, w);
 
-    int* list = random_order(0,wordnum-1);
+    int* list = random_order(0, wordnum - 1);
     for (int j = 0; j < *lvl; j++) {
-	printw("\n%d:\t %s\n", j+1, w[list[j]].second);
+        printw("\n%d:\t %s\n", j + 1, w[list[j]].second);
         printw("Input translate on English:\t ");
         scanw("%s", input);
-	k += sum(input, list[j], w, q);
+        k += sum(input, list[j], w, q);
     }
-     printw("\nПравильных слов: %d\n",k);
+    printw("\nПравильных слов: %d\n", k);
     getch();
-    *lvl=0;
-    *var=0;
-
+    *lvl = 0;
+    *var = 0;
 }
-
