@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
     setlocale(LC_ALL, "");
     initscr();
     scrollok(stdscr, TRUE);
-    
+
     menu_call(Main);
 
     endwin();

@@ -146,11 +146,13 @@ void menu_call(enum Menu menu_type)
         break;
 
     case ModeEnToRu:
-        menu_call_result( menu_call_type_en_to_ru(0, wordlist_form(filename, &order)) );
+        menu_call_result(
+                menu_call_type_en_to_ru(0, wordlist_form(filename, &order)));
         break;
 
     case ModeRuToEn:
-        menu_call_result( menu_call_type_ru_to_en(0, wordlist_form(filename, &order)) );
+        menu_call_result(
+                menu_call_type_ru_to_en(0, wordlist_form(filename, &order)));
         break;
 
     default:
