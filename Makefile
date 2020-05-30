@@ -32,4 +32,4 @@ Func.o:
 	$(C) $(compile_flag) ./src/func.c -o ./build/src/func.o
 
 Func.od:
-	$(C) $(debug_compile_flag) ./src/funcn.c -o ./build/src/func.o
+	$(C) $(debug_compile_flag) ./src/func.c -o ./build/src/func.o
