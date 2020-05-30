@@ -1,9 +1,11 @@
 #include "curses.h"
-#include "func.h"
+
 #include <locale.h>
 #include <ncurses.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 size_t wordnum = 0; //Количество слов в списке
 size_t tasks = 10;  //Количество "номеров" в задании
@@ -45,21 +47,13 @@ int main(int argc, char* argv[])
     }
     fclose(f);
 
+    srand(time(0));
     setlocale(LC_ALL, "");
     initscr();
     scrollok(stdscr, TRUE);
-    int item;
-    int lvl = 0;
-    int var = 0;
-    while (1) {
-        Menu(&item);
-        if (item == 1)
-            Play(&lvl, &var);
-        if (item == 2) {
-            endwin();
-            return 0;
-        }
-    }
+    
+    menu_call(Main);
 
+    endwin();
     return 0;
 }
