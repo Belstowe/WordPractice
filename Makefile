@@ -14,7 +14,7 @@ debug: clean Main.od Curses.od Func.od
 	$(C) ./build/src/*.o -o ./bin/wrdprct $(lib)
 	cp ./src/translate.txt ./bin/
 
-test: clean TMain.o Curses.o Func.o
+test: clean TMain.o Curses.o Func.o TFunc.o
 	$(C) ./build/src/*.o ./build/test/*.o -o ./bin/test $(lib)
 	cp ./src/translate.txt ./bin/
 
@@ -41,3 +41,6 @@ Func.o:
 
 Func.od:
 	$(C) $(debug_compile_flag) ./src/func.c -o ./build/src/func.o
+
+TFunc.o:
+	$(C) $(include_local_lib) $(compile_flag) ./test/t_func.c -o ./build/test/t_func.o

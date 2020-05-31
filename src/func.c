@@ -67,8 +67,12 @@ int file_word_pairs_count(char* IFILE)
 /* file_word_pairs_read
  * Читает пары слов из списка и заносит их в массив пар слов words.
  */
-void file_word_pairs_read(char* IFILE, Words* words, const int wordnum)
+Words* file_word_pairs_read(char* IFILE, const int wordnum)
 {
+    Words* wordlist = malloc(wordnum * sizeof(Words));
+    if (wordlist == NULL)
+        return NULL;
+
     FILE* f;
     if ((f = fopen(IFILE, "r")) == NULL) {
         perror("fopen");
@@ -78,10 +82,11 @@ void file_word_pairs_read(char* IFILE, Words* words, const int wordnum)
     for (size_t i = 0; i < wordnum; i++)
         fscanf(f,
                "%s %s",
-               ((words[i]).translate_from),
-               ((words[i]).translate_to));
+               ((wordlist[i]).translate_from),
+               ((wordlist[i]).translate_to));
 
     fclose(f);
+    return wordlist;
 }
 
 /* wordlist_form
@@ -91,9 +96,7 @@ void file_word_pairs_read(char* IFILE, Words* words, const int wordnum)
 Words* wordlist_form(char* IFILE, int** order)
 {
     const int wordnum = file_word_pairs_count(IFILE);
-    Words* wordlist = malloc(wordnum * sizeof(Words));
     (*order) = random_order(0, wordnum - 1);
-    file_word_pairs_read(IFILE, wordlist, wordnum);
-
-    return wordlist;
+    
+    return file_word_pairs_read(IFILE, wordnum);
 }
