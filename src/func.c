@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-extern size_t wordnum, tasks;
-
 /* get_random_int
  * Возвращает целое число в диапазоне от min до max (включая).
  */
@@ -46,11 +44,11 @@ int* random_order(const int min, const int max)
 }
 
 /* file_word_pairs_count
- * Считывает пары слов в списке и записывает их в переменную wordnum.
+ * Считывает пары слов в списке и возвращает их количество.
  */
-void file_word_pairs_count(char* IFILE)
+int file_word_pairs_count(char* IFILE)
 {
-    wordnum = 0;
+    int wordnum = 0;
     Words* nulwords = malloc(sizeof(Words));
     FILE* f;
     if ((f = fopen(IFILE, "r")) == NULL) {
@@ -63,12 +61,13 @@ void file_word_pairs_count(char* IFILE)
         wordnum++;
 
     fclose(f);
+    return wordnum;
 }
 
 /* file_word_pairs_read
  * Читает пары слов из списка и заносит их в массив пар слов words.
  */
-void file_word_pairs_read(char* IFILE, Words* words)
+void file_word_pairs_read(char* IFILE, Words* words, const int wordnum)
 {
     FILE* f;
     if ((f = fopen(IFILE, "r")) == NULL) {
@@ -91,10 +90,10 @@ void file_word_pairs_read(char* IFILE, Words* words)
  */
 Words* wordlist_form(char* IFILE, int** order)
 {
-    file_word_pairs_count(IFILE);
+    const int wordnum = file_word_pairs_count(IFILE);
     Words* wordlist = malloc(wordnum * sizeof(Words));
     (*order) = random_order(0, wordnum - 1);
-    file_word_pairs_read(IFILE, wordlist);
+    file_word_pairs_read(IFILE, wordlist, wordnum);
 
     return wordlist;
 }
