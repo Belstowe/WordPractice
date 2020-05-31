@@ -10,6 +10,8 @@ typedef struct {
 
 int get_random_int(int min, int max);
 int* random_order(const int min, const int max);
+int file_word_pairs_count(char* IFILE);
+Words* file_word_pairs_read(char* IFILE, const int wordnum);
 Words* wordlist_form(char* IFILE, int** order);
 
 #endif
