@@ -97,6 +97,6 @@ Words* wordlist_form(char* IFILE, int** order)
 {
     const int wordnum = file_word_pairs_count(IFILE);
     (*order) = random_order(0, wordnum - 1);
-    
+
     return file_word_pairs_read(IFILE, wordnum);
 }
