@@ -1,6 +1,7 @@
 #include <ui.h>
 
 #include <ctest.h>
+#include <stdlib.h>
 
 CTEST(ui_assist, correct_utf8_string_length)
 {
@@ -25,4 +26,16 @@ CTEST(ui_assist, correctly_aligned_text)
     align_string(test_string3, 20); // Здесь же только последний пробел должен
                                     // быть замещён на '\n'.
     ASSERT_STR("Тестовая проверка\nтестирования", test_string3);
+}
+
+CTEST(ui_assist, correctly_split_aligned_text)
+{
+	char test_string1[] = "Тестовая проверка тестирования";
+	char** substrings = malloc(4 * sizeof(char*));
+	unsigned count = split_align_string(test_string1, 10, substrings);
+
+	ASSERT_EQUAL(3, count);
+	ASSERT_STR("Тестовая", substrings[0]);
+	ASSERT_STR("проверка", substrings[1]);
+	ASSERT_STR("тестирования", substrings[2]);
 }

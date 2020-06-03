@@ -82,12 +82,12 @@ unsigned split_align_string(char* str, unsigned screen_width, char** substr)
     align_string(str, screen_width);
     unsigned count = 0;
 
-    char* token = strtok(str, '\n');
+    char* token = strtok(str, "\n");
 
     while (token != NULL) {
         substr[count] = token;
         count++;
-        token = strtok(NULL, '\n');
+        token = strtok(NULL, "\n");
     }
 
     return count;
