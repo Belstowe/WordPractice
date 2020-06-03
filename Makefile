@@ -1,20 +1,20 @@
 C = gcc
 compile_flag = -Wall -c
 debug_compile_flag = -O0 -g -Wall -c
-lib = -lncurses
+lib = -lncursesw
 include_local_lib = -I ./src -I ./ctest
 
-all: clean Main.o Curses.o Func.o
+all: clean Main.o Menus.o Func.o
 	$(C) ./build/src/*.o -o ./bin/wrdprct $(lib)
 	cp ./src/translate.txt ./bin/
 
 .PHONY: clean debug test
 
-debug: clean Main.od Curses.od Func.od
+debug: clean Main.od Menus.od Func.od
 	$(C) ./build/src/*.o -o ./bin/wrdprct $(lib)
 	cp ./src/translate.txt ./bin/
 
-test: clean TMain.o Curses.o Func.o TFunc.o
+test: clean TMain.o Menus.o Func.o TFunc.o
 	$(C) ./build/src/*.o ./build/test/*.o -o ./bin/test $(lib)
 	cp ./src/translate.txt ./bin/
 
@@ -30,11 +30,11 @@ Main.od:
 TMain.o:
 	$(C) $(include_local_lib) $(compile_flag) ./test/main.c -o ./build/test/main.o
 
-Curses.o:
-	$(C) $(compile_flag) ./src/curses.c -o ./build/src/curses.o
+Menus.o:
+	$(C) $(compile_flag) ./src/menus.c -o ./build/src/menus.o
 
-Curses.od:
-	$(C) $(debug_compile_flag) ./src/curses.c -o ./build/src/curses.o
+Menus.od:
+	$(C) $(debug_compile_flag) ./src/menus.c -o ./build/src/menus.o
 
 Func.o:
 	$(C) $(compile_flag) ./src/func.c -o ./build/src/func.o

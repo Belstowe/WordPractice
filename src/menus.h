@@ -1,5 +1,5 @@
-#ifndef CURSES_H
-#define CURSES_H
+#ifndef MENUS_H
+#define MENUS_H
 
 enum Menu {
     Main,       // Главное меню
@@ -10,10 +10,6 @@ enum Menu {
     Exit        // Выход из программы
 };
 
-// void Menu(int* item);
-// void Difficult(int* lvl);
-// void Play(int* lvl, int* var);
-// void Variant(int* var);
 void menu_call(enum Menu menu_type);
 
 #endif
