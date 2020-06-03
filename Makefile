@@ -4,17 +4,17 @@ debug_compile_flag = -O0 -g -Wall -c
 lib = -lncursesw
 include_local_lib = -I ./src -I ./ctest
 
-all: clean Main.o Menus.o Func.o
+all: clean Main.o Menus.o Func.o Ui.o
 	$(C) ./build/src/*.o -o ./bin/wrdprct $(lib)
 	cp ./src/translate.txt ./bin/
 
 .PHONY: clean debug test
 
-debug: clean Main.od Menus.od Func.od
+debug: clean Main.od Menus.od Func.od Ui.od
 	$(C) ./build/src/*.o -o ./bin/wrdprct $(lib)
 	cp ./src/translate.txt ./bin/
 
-test: clean TMain.o Menus.o Func.o TFunc.o
+test: clean TMain.o Menus.o Func.o TFunc.o Ui.o TUi.o
 	$(C) ./build/src/*.o ./build/test/*.o -o ./bin/test $(lib)
 	cp ./src/translate.txt ./bin/
 
@@ -44,3 +44,12 @@ Func.od:
 
 TFunc.o:
 	$(C) $(include_local_lib) $(compile_flag) ./test/t_func.c -o ./build/test/t_func.o
+
+Ui.o:
+	$(C) $(compile_flag) ./src/ui.c -o ./build/src/ui.o
+
+Ui.od:
+	$(C) $(debug_compile_flag) ./src/ui.c -o ./build/src/ui.o
+
+TUi.o:
+	$(C) $(include_local_lib) $(compile_flag) ./test/t_ui.c -o ./build/test/t_ui.o
