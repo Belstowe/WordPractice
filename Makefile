@@ -1,7 +1,7 @@
 C = gcc
 compile_flag = -Wall -c
 debug_compile_flag = -O0 -g -Wall -c
-lib = -lncurses
+lib = -lncursesw
 include_local_lib = -I ./src -I ./ctest
 
 all: clean Main.o Curses.o Func.o
