@@ -1,4 +1,5 @@
 #include "ui.h"
+
 #include <stdlib.h>
 #include <string.h>
 
@@ -63,4 +64,31 @@ void align_string(char* str, unsigned screen_width)
             last_space_position = sym = index = 0;
         }
     }
+}
+
+/* split_align_string
+ * Функция делит строку str на подстроки, такие, что:
+ * Вмещаются во всю ширину окна консоли screen_width;
+ * Содержат цельные слова;
+ * Сохраняют прежние переносы на новые строки.
+ * Возвращает в substr массив указателей на получившиеся подстроки, а также их
+ * число.
+ *
+ * Перед использованием данной подпрограммы нет необходимости дополнительно
+ * вызывать align_string, однако выделять память для substr необходимо.
+ */
+unsigned split_align_string(char* str, unsigned screen_width, char** substr)
+{
+    align_string(str, screen_width);
+    unsigned count = 0;
+
+    char* token = strtok(str, '\n');
+
+    while (token != NULL) {
+        substr[count] = token;
+        count++;
+        token = strtok(NULL, '\n');
+    }
+
+    return count;
 }
