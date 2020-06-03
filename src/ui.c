@@ -1,6 +1,6 @@
 #include "ui.h"
 
-#include <stdlib.h>
+#include <ncurses.h>
 #include <string.h>
 
 /* utf8_strlen
@@ -91,4 +91,46 @@ unsigned split_align_string(char* str, unsigned screen_width, char** substr)
     }
 
     return count;
+}
+
+/* halign
+ * Возвращает колонну, с которой начнётся строка.
+ * В зависимости от аргумента align ('l', 'c', 'r') строка может быть слева, по
+ * центру или справа соответственно.
+ */
+unsigned halign(const char* str, const char align, const unsigned width)
+{
+	switch (align) {
+		case 'l':
+			return 0;
+
+		case 'c':
+			return (width - utf8_strlen(str)) / 2;
+
+		case 'r':
+			return (width - utf8_strlen(str));
+	}
+
+	return 0;
+}
+
+/* valign
+ * Возвращает строку, с которой начнётся строка.
+ * В зависимости от аргумента align ('u', 'c', 'b') строка может быть сверху, по
+ * центру или снизу соответственно.
+ */
+unsigned valign(const char align, const unsigned height)
+{
+	switch (align) {
+		case 'u':
+			return 0;
+
+		case 'c':
+			return (height - 1) / 2;
+
+		case 'b':
+			return height - 1;
+	}
+
+	return 0;
 }
