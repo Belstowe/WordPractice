@@ -54,13 +54,13 @@ void align_string(char* str, unsigned screen_width)
 
         index++;
         if (index >= screen_width) {
-        	if (last_space_position != 0) {
-        		token[last_space_position] = '\n';
-        		token = &(token[last_space_position]);
-        	}
-        	else
-        		token = &(token[sym]);
-            
+            if (last_space_position != 0) {
+                token[last_space_position] = '\n';
+                token = &(token[last_space_position]);
+            }
+            else
+                token = &(token[sym]);
+
             last_space_position = sym = index = 0;
         }
     }
