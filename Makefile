@@ -14,7 +14,7 @@ debug: clean Main.od Menus.od Func.od Ui.od
 	$(C) ./build/src/*.o -o ./bin/wrdprct $(lib)
 	cp ./src/translate.txt ./bin/
 
-test: clean TMain.o Menus.o Func.o TFunc.o Ui.o
+test: clean TMain.o Menus.o Func.o TFunc.o Ui.o TUi.o
 	$(C) ./build/src/*.o ./build/test/*.o -o ./bin/test $(lib)
 	cp ./src/translate.txt ./bin/
 
@@ -50,3 +50,6 @@ Ui.o:
 
 Ui.od:
 	$(C) $(debug_compile_flag) ./src/ui.c -o ./build/src/ui.o
+
+TUi.o:
+	$(C) $(include_local_lib) $(compile_flag) ./test/t_ui.c -o ./build/test/t_ui.o
