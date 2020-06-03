@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* utf8_strlen
+ * Считывает количество реальных (видимых) символов в строке str и возвращает
+ * его.
+ */
 unsigned utf8_strlen(const char* str)
 {
     unsigned len = 0;
@@ -17,4 +21,43 @@ unsigned utf8_strlen(const char* str)
     return len;
 }
 
-//char* align_string(const char* base_str);
+/* align_string
+ * Для правильного центрирования строки, ввиду особенностей работы и символа
+ * '\n', и случая выхода за рамки консоли (указатель всегда начинает слева), мы
+ * должны свести строку к общему виду, исключив второй случай. Для этого мы
+ * заменяем последний пробел, если строка выходит за рамки окна, на '\n'.
+ *
+ * Принимает на вход строку str (которая впоследствии видоизменяется) и ширину
+ * окна screen_width.
+ */
+void align_string(char* str, unsigned screen_width)
+{
+    unsigned last_space_position = 0;
+    char* token = str;
+    unsigned index = 0;
+
+    while (token[index] != '\0') {
+        if (token[index] & 0x80) {      // 1*******
+            if (!(token[index] & 0x40)) // *0******
+                continue; // 10****** - байты, кодирующие символы размером более
+        } // 1 байта; оттого их считать не надо
+
+        if (token[index] == '\n') {
+            token = &(token[index + 1]);
+            last_space_position = index = 0;
+            continue;
+        }
+
+        if (token[index] == ' ')
+            last_space_position = index;
+
+        index++;
+        if (index >= screen_width) {
+        	if (last_space_position != 0)
+        		token[last_space_position] = '\n';
+
+            token = &(token[last_space_position + 1]);
+            last_space_position = index = 0;
+        }
+    }
+}
