@@ -9,6 +9,9 @@ int iterations = 0; // Количество "номеров" в задании
 int* order;
 enum Menu gamemode = Exit;
 
+/* menu_call_result
+ * Меню отображения результата. На вход принимает число правильных результатов.
+ */
 void menu_call_result(unsigned correct_answers)
 {
     printw("Правильных ответов всего: %d/%d.\n", correct_answers, iterations);
@@ -16,6 +19,12 @@ void menu_call_result(unsigned correct_answers)
     menu_call(Main);
 }
 
+/* menu_call_type_en_to_ru
+ * Меню игры на перевод с английского на русский.
+ * Рекурсивная функция, которая вызывает себя ровно указанное количество
+ * итераций.
+ * Возвращает количество правильных результатов.
+ */
 unsigned menu_call_type_en_to_ru(unsigned iter, Words* wordlist)
 {
     if (iter == iterations)
@@ -44,6 +53,12 @@ unsigned menu_call_type_en_to_ru(unsigned iter, Words* wordlist)
     return is_correct + menu_call_type_en_to_ru(iter + 1, wordlist);
 }
 
+/* menu_call_type_ru_to_en
+ * Меню игры на перевод с русского на английский.
+ * Рекурсивная функция, которая вызывает себя ровно указанное количество
+ * итераций.
+ * Возвращает количество правильных результатов.
+ */
 unsigned menu_call_type_ru_to_en(unsigned iter, Words* wordlist)
 {
     if (iter == iterations)
@@ -72,6 +87,11 @@ unsigned menu_call_type_ru_to_en(unsigned iter, Words* wordlist)
     return is_correct + menu_call_type_en_to_ru(iter + 1, wordlist);
 }
 
+/* menu_call_difficulty
+ * Меню выбора сложности.
+ * Вызывает впоследствии меню игры, в зависимости от выбранного перед этим
+ * режима.
+ */
 void menu_call_difficulty()
 {
     char pick;
@@ -90,6 +110,10 @@ void menu_call_difficulty()
     menu_call(gamemode);
 }
 
+/* menu_call_variant
+ * Меню выбора игрового режима.
+ * Устанавливает игровой режим и вызывает впоследствии меню выбора сложности.
+ */
 void menu_call_variant()
 {
     char pick;
@@ -110,6 +134,11 @@ void menu_call_variant()
     menu_call(Difficulty);
 }
 
+/* menu_call_main
+ * Главное меню.
+ * При выборе либо происходит выход из программы, либо вызывается меню выбора
+ * игрового режима, от которого затем продолжается работа программы.
+ */
 void menu_call_main()
 {
     char pick;
@@ -129,6 +158,9 @@ void menu_call_main()
         menu_call(Variant);
 }
 
+/* menu_call
+ * Вызов определённого меню с предварительной очисткой экрана.
+ */
 void menu_call(enum Menu menu_type)
 {
     clear();

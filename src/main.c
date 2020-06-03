@@ -45,13 +45,13 @@ int main(int argc, char* argv[])
     }
     fclose(f);
 
-    srand(time(0));
-    setlocale(LC_ALL, "");
-    initscr();
-    scrollok(stdscr, TRUE);
+    srand(time(0)); // Инициализация рандомизатора
+    setlocale(LC_ALL, ""); // Установка системного языка
+    initscr(); // Инициализация окна консоли для работы Ncurses
+    scrollok(stdscr, TRUE); // Допускаем выход указателя за пределы окна консоли
 
-    menu_call(Main);
+    menu_call(Main); // Вызываем главное меню
 
-    endwin();
+    endwin(); // После выхода из цикла меню переходим в обычный режим работы с консолью и выходим
     return 0;
 }
