@@ -1,5 +1,6 @@
 #include "menus.h"
 #include "func.h"
+#include "ui.h"
 
 #include <ncurses.h>
 #include <string.h>
@@ -14,7 +15,13 @@ enum Menu gamemode = Exit;
  */
 void menu_call_result(unsigned correct_answers)
 {
-    printw("Правильных ответов всего: %d/%d.\n", correct_answers, iterations);
+    char result[MAX_STRING_SIZE];
+    sprintf(result, "Правильных ответов всего:\n%d/%d.\n", correct_answers, iterations);
+    
+    border_print(result,
+                 valign('c', getmaxy(stdscr), 5, 15), 0, valign('c', getmaxy(stdscr), 10, 15), getmaxx(stdscr), 'c', 'c');
+
+    curs_set(0);
     getch();
     menu_call(Main);
 }
@@ -33,23 +40,39 @@ unsigned menu_call_type_en_to_ru(unsigned iter, Words* wordlist)
     unsigned is_correct = 0;
     const int index = order[iter];
 
+    char translation1[MAX_STRING_SIZE + 64];
+    sprintf(translation1, "%d:\n%s", iter + 1, wordlist[index].translate_from);
+
+    char translation2[] = "Введите перевод на русский: ";
+
+    char translation_correct[] = "ВЕРНО.";
+
+    char translation_incorrect[MAX_STRING_SIZE + 64];
+    sprintf(translation_incorrect, "НЕВЕРНО.\nПравильно: %s.", wordlist[index].translate_to);
+
     char input[MAX_STRING_SIZE];
 
-    printw("\n%d:\t %s\n", iter + 1, wordlist[index].translate_from);
-    printw("Введите перевод на русский:\t ");
+    border_print(translation1,
+                 valign('c', getmaxy(stdscr), 0, 15), 0, valign('c', getmaxy(stdscr), 5, 15), getmaxx(stdscr), 'c', 'b');
+    border_print(translation2,
+                 valign('c', getmaxy(stdscr), 6, 15), 0, valign('c', getmaxy(stdscr), 8, 15), getmaxx(stdscr), 'c', 'b');
+
+    move(valign('c', getmaxy(stdscr), 9, 15), halign(translation2, 'c', getmaxx(stdscr) + 1));
     scanw("%s", input);
 
+    curs_set(0);
     if (strcmp(input, wordlist[index].translate_to))
-        printw("НЕВЕРНО.\n"
-               "Правильно: %s.\n",
-               wordlist[index].translate_to);
+        border_print(translation_incorrect,
+                     valign('c', getmaxy(stdscr), 12, 15), 0, valign('c', getmaxy(stdscr), 15, 15), getmaxx(stdscr), 'c', 'u');
     else {
-        printw("ВЕРНО.\n");
+        border_print(translation_correct,
+                     valign('c', getmaxy(stdscr), 12, 15), 0, valign('c', getmaxy(stdscr), 15, 15), getmaxx(stdscr), 'c', 'u');
         is_correct = 1;
     }
     getch();
 
     clear();
+    curs_set(1);
     return is_correct + menu_call_type_en_to_ru(iter + 1, wordlist);
 }
 
@@ -67,24 +90,40 @@ unsigned menu_call_type_ru_to_en(unsigned iter, Words* wordlist)
     unsigned is_correct = 0;
     const int index = order[iter];
 
+    char translation1[MAX_STRING_SIZE + 64];
+    sprintf(translation1, "%d:\n%s", iter + 1, wordlist[index].translate_to);
+
+    char translation2[] = "Введите перевод на английский: ";
+
+    char translation_correct[] = "ВЕРНО.";
+
+    char translation_incorrect[MAX_STRING_SIZE + 64];
+    sprintf(translation_incorrect, "НЕВЕРНО.\nПравильно: %s.", wordlist[index].translate_from);
+
     char input[MAX_STRING_SIZE];
 
-    printw("\n%d:\t %s\n", iter + 1, wordlist[index].translate_to);
-    printw("Введите перевод на английский:\t ");
+    border_print(translation1,
+                 valign('c', getmaxy(stdscr), 0, 15), 0, valign('c', getmaxy(stdscr), 5, 15), getmaxx(stdscr), 'c', 'b');
+    border_print(translation2,
+                 valign('c', getmaxy(stdscr), 6, 15), 0, valign('c', getmaxy(stdscr), 8, 15), getmaxx(stdscr), 'c', 'b');
+
+    move(valign('c', getmaxy(stdscr), 9, 15), halign(translation2, 'c', getmaxx(stdscr) + 1));
     scanw("%s", input);
 
+    curs_set(0);
     if (strcmp(input, wordlist[index].translate_from))
-        printw("НЕВЕРНО.\n"
-               "Правильно: %s.\n",
-               wordlist[index].translate_from);
+        border_print(translation_incorrect,
+                     valign('c', getmaxy(stdscr), 12, 15), 0, valign('c', getmaxy(stdscr), 15, 15), getmaxx(stdscr), 'c', 'u');
     else {
-        printw("ВЕРНО.\n");
+        border_print(translation_correct,
+                     valign('c', getmaxy(stdscr), 12, 15), 0, valign('c', getmaxy(stdscr), 15, 15), getmaxx(stdscr), 'c', 'u');
         is_correct = 1;
     }
     getch();
 
     clear();
-    return is_correct + menu_call_type_en_to_ru(iter + 1, wordlist);
+    curs_set(1);
+    return is_correct + menu_call_type_ru_to_en(iter + 1, wordlist);
 }
 
 /* menu_call_difficulty
@@ -96,11 +135,19 @@ void menu_call_difficulty()
 {
     char pick;
 
-    printw("Вы можете выбрать количество слов для тренировки\n");
-    printw("\t\t1. 10 слов\n");
-    printw("\t\t2. 15 слов\n");
-    printw("\t\t3. 20 слов\n");
-    printw("Введите цифру варианта: ");
+    char difficulty1[] = "Вы можете выбрать количество слов для тренировки:";
+    char difficulty2[] = "1. 10 слов;\n"\
+                         "2. 15 слов;\n"\
+                         "3. 20 слов.";
+    char difficulty3[] = "Введите цифру варианта.";
+    
+    border_print(difficulty1,
+                 valign('c', getmaxy(stdscr), 0, 15), 0, valign('c', getmaxy(stdscr), 5, 15), getmaxx(stdscr), 'c', 'b');
+    border_print(difficulty2,
+                 valign('c', getmaxy(stdscr), 6, 15), 0, valign('c', getmaxy(stdscr), 12, 15), getmaxx(stdscr), 'c', 'c');
+    border_print(difficulty3,
+                 valign('c', getmaxy(stdscr), 13, 15), 0, valign('c', getmaxy(stdscr), 14, 15), getmaxx(stdscr), 'c', 'u');
+    curs_set(0);
 
     do {
         pick = getch();
@@ -118,9 +165,13 @@ void menu_call_variant()
 {
     char pick;
 
-    printw("1. С английского на русский.\n"
-           "2. С русского на английский.\n"
-           "Для выбора введите нужную цифру.\n");
+    char variant[] = "1. С английского на русский.\n"\
+                     "2. С русского на английский.\n \n"\
+                     "Для выбора введите нужную цифру.";
+
+    border_print(variant,
+                 valign('c', getmaxy(stdscr), 0, 10), 0, valign('c', getmaxy(stdscr), 9, 10), getmaxx(stdscr), 'c', 'u');
+    curs_set(0);
 
     do {
         pick = getch();
@@ -143,12 +194,17 @@ void menu_call_main()
 {
     char pick;
 
-    printw("\t\t  МЕНЮ\n");
-    printw("Добро пожаловать в Word Practice, программу для заучивания "
-           "иноязычных слов\n\n"
-           "Выберите :\n");
-    printw("\t\t1. Начать!.\n");
-    printw("\t\t2. Выход\n");
+    char welcome1[] = "МЕНЮ\n \n"\
+                      "Добро пожаловать в WordPractice, программу для заучивания иноязычных слов!";
+    char welcome2[] = "Выберите:\n"\
+                      "1. Начать!\n"\
+                      "2. Выход.\n";
+
+    border_print(welcome1,
+                 valign('c', getmaxy(stdscr), 0, 15), 0, valign('c', getmaxy(stdscr), 10, 15), getmaxx(stdscr), 'c', 'c');
+    border_print(welcome2,
+                 valign('c', getmaxy(stdscr), 11, 15), 0, valign('c', getmaxy(stdscr), 14, 15), getmaxx(stdscr), 'c', 'u');
+    curs_set(0);
 
     do {
         pick = getch();
@@ -164,6 +220,9 @@ void menu_call_main()
 void menu_call(enum Menu menu_type)
 {
     clear();
+
+    curs_set(1);
+
     switch (menu_type) {
     case Main:
         menu_call_main();

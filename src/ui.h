@@ -10,5 +10,13 @@ valign(const char align,
        const unsigned height,
        const unsigned num,
        const unsigned total);
+void border_print(
+        char* text,
+        const unsigned up_y,
+        const unsigned left_x,
+        const unsigned bottom_y,
+        const unsigned right_x,
+        const char horizontal,
+        const char vertical);
 
 #endif

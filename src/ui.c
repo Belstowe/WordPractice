@@ -32,7 +32,7 @@ unsigned utf8_strlen(const char* str)
  * Принимает на вход строку str (которая впоследствии видоизменяется) и ширину
  * окна screen_width.
  */
-void align_string(char* str, unsigned screen_width)
+void align_string(char str[], unsigned screen_width)
 {
     unsigned last_space_position = 0;
     char* token = str;
@@ -78,7 +78,7 @@ void align_string(char* str, unsigned screen_width)
  * Перед использованием данной подпрограммы нет необходимости дополнительно
  * вызывать align_string, однако выделять память для substr необходимо.
  */
-unsigned split_align_string(char* str, unsigned screen_width, char** substr)
+unsigned split_align_string(char str[], unsigned screen_width, char** substr)
 {
     align_string(str, screen_width);
     unsigned count = 0;
@@ -147,7 +147,7 @@ valign(const char align,
  * текст, учитывая горизонтальное и вертикальное выравнивания.
  */
 void border_print(
-        char* text,
+        char text[],
         const unsigned up_y,
         const unsigned left_x,
         const unsigned bottom_y,
@@ -162,8 +162,5 @@ void border_print(
     unsigned count = split_align_string(text, width, substrings);
 
     for (unsigned i = 0; i < count; i++)
-        mvprintw(
-                halign(substrings[i], horizontal, width),
-                valign(vertical, height, i, count),
-                text);
+        mvprintw(valign(vertical, height, i, count) + up_y, halign(substrings[i], horizontal, width) + left_x, substrings[i]);
 }
