@@ -1,6 +1,7 @@
 #include "ui.h"
 
 #include <ncurses.h>
+#include <stdlib.h>
 #include <string.h>
 
 /* utf8_strlen
@@ -100,37 +101,69 @@ unsigned split_align_string(char* str, unsigned screen_width, char** substr)
  */
 unsigned halign(const char* str, const char align, const unsigned width)
 {
-	switch (align) {
-		case 'l':
-			return 0;
+    switch (align) {
+    case 'l':
+        return 0;
 
-		case 'c':
-			return (width - utf8_strlen(str)) / 2;
+    case 'c':
+        return (width - utf8_strlen(str)) / 2;
 
-		case 'r':
-			return (width - utf8_strlen(str));
-	}
+    case 'r':
+        return (width - utf8_strlen(str));
+    }
 
-	return 0;
+    return 0;
 }
 
 /* valign
  * Возвращает строку, с которой начнётся строка.
- * В зависимости от аргумента align ('u', 'c', 'b') строка может быть сверху, по
- * центру или снизу соответственно.
+ * Аргументы num и total необходимы для учёта множества строк - первый
+ * обозначает индекс строки и начинается с 0, а второй обозначает число строк.
+ * В зависимости от аргумента align ('u', 'c', 'b') строка может
+ * быть сверху, по центру или снизу соответственно.
  */
-unsigned valign(const char align, const unsigned height)
+unsigned
+valign(const char align,
+       const unsigned height,
+       const unsigned num,
+       const unsigned total)
 {
-	switch (align) {
-		case 'u':
-			return 0;
+    switch (align) {
+    case 'u':
+        return num;
 
-		case 'c':
-			return (height - 1) / 2;
+    case 'c':
+        return (height / 2) + num - ((total + 1) / 2);
 
-		case 'b':
-			return height - 1;
-	}
+    case 'b':
+        return height + num - total;
+    }
 
-	return 0;
+    return 0;
+}
+
+/* border_print
+ * Печатает в пределах определённой рамки (включая пограничные координаты)
+ * текст, учитывая горизонтальное и вертикальное выравнивания.
+ */
+void border_print(
+        char* text,
+        const unsigned up_y,
+        const unsigned left_x,
+        const unsigned bottom_y,
+        const unsigned right_x,
+        const char horizontal,
+        const char vertical)
+{
+    const unsigned width = right_x - left_x + 1;
+    const unsigned height = bottom_y - up_y + 1;
+
+    char** substrings = malloc(height * sizeof(char*));
+    unsigned count = split_align_string(text, width, substrings);
+
+    for (unsigned i = 0; i < count; i++)
+        mvprintw(
+                halign(substrings[i], horizontal, width),
+                valign(vertical, height, i, count),
+                text);
 }
