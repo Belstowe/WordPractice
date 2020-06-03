@@ -18,16 +18,17 @@ enum Menu gamemode = Exit;
  */
 void menu_call_resolution(enum Menu pending_menu)
 {
-    char resolution_beg[] = "Пожалуйста, смените разрешение на более высокое, затем нажмите любую клавишу, чтобы продолжить.";
-    
-    border_print(resolution_beg,
-                 0, 0, getmaxy(stdscr), getmaxx(stdscr), 'c', 'c');
+    char resolution_beg[]
+            = "Пожалуйста, смените разрешение на более высокое, затем нажмите "
+              "любую клавишу, чтобы продолжить.";
+
+    border_print(
+            resolution_beg, 0, 0, getmaxy(stdscr), getmaxx(stdscr), 'c', 'c');
 
     curs_set(0);
     getch();
     menu_call(pending_menu);
 }
-
 
 /* menu_call_result
  * Меню отображения результата. На вход принимает число правильных результатов.
@@ -35,10 +36,19 @@ void menu_call_resolution(enum Menu pending_menu)
 void menu_call_result(unsigned correct_answers)
 {
     char result[MAX_STRING_SIZE];
-    sprintf(result, "Правильных ответов всего:\n%d/%d.\n", correct_answers, iterations);
-    
-    border_print(result,
-                 valign('c', getmaxy(stdscr), 5, 15), 0, valign('c', getmaxy(stdscr), 10, 15), getmaxx(stdscr), 'c', 'c');
+    sprintf(result,
+            "Правильных ответов всего:\n%d/%d.\n",
+            correct_answers,
+            iterations);
+
+    border_print(
+            result,
+            valign('c', getmaxy(stdscr), 5, 15),
+            0,
+            valign('c', getmaxy(stdscr), 10, 15),
+            getmaxx(stdscr),
+            'c',
+            'c');
 
     curs_set(0);
     getch();
@@ -67,25 +77,52 @@ unsigned menu_call_type_en_to_ru(unsigned iter, Words* wordlist)
     char translation_correct[] = "ВЕРНО.";
 
     char translation_incorrect[MAX_STRING_SIZE + 64];
-    sprintf(translation_incorrect, "НЕВЕРНО.\nПравильно: %s.", wordlist[index].translate_to);
+    sprintf(translation_incorrect,
+            "НЕВЕРНО.\nПравильно: %s.",
+            wordlist[index].translate_to);
 
     char input[MAX_STRING_SIZE];
 
-    border_print(translation1,
-                 valign('c', getmaxy(stdscr), 0, 15), 0, valign('c', getmaxy(stdscr), 5, 15), getmaxx(stdscr), 'c', 'b');
-    border_print(translation2,
-                 valign('c', getmaxy(stdscr), 6, 15), 0, valign('c', getmaxy(stdscr), 8, 15), getmaxx(stdscr), 'c', 'b');
+    border_print(
+            translation1,
+            valign('c', getmaxy(stdscr), 0, 15),
+            0,
+            valign('c', getmaxy(stdscr), 5, 15),
+            getmaxx(stdscr),
+            'c',
+            'b');
+    border_print(
+            translation2,
+            valign('c', getmaxy(stdscr), 6, 15),
+            0,
+            valign('c', getmaxy(stdscr), 8, 15),
+            getmaxx(stdscr),
+            'c',
+            'b');
 
-    move(valign('c', getmaxy(stdscr), 9, 15), halign(translation2, 'c', getmaxx(stdscr) + 1));
+    move(valign('c', getmaxy(stdscr), 9, 15),
+         halign(translation2, 'c', getmaxx(stdscr) + 1));
     scanw("%s", input);
 
     curs_set(0);
     if (strcmp(input, wordlist[index].translate_to))
-        border_print(translation_incorrect,
-                     valign('c', getmaxy(stdscr), 12, 15), 0, valign('c', getmaxy(stdscr), 15, 15), getmaxx(stdscr), 'c', 'u');
+        border_print(
+                translation_incorrect,
+                valign('c', getmaxy(stdscr), 12, 15),
+                0,
+                valign('c', getmaxy(stdscr), 15, 15),
+                getmaxx(stdscr),
+                'c',
+                'u');
     else {
-        border_print(translation_correct,
-                     valign('c', getmaxy(stdscr), 12, 15), 0, valign('c', getmaxy(stdscr), 15, 15), getmaxx(stdscr), 'c', 'u');
+        border_print(
+                translation_correct,
+                valign('c', getmaxy(stdscr), 12, 15),
+                0,
+                valign('c', getmaxy(stdscr), 15, 15),
+                getmaxx(stdscr),
+                'c',
+                'u');
         is_correct = 1;
     }
     getch();
@@ -117,25 +154,52 @@ unsigned menu_call_type_ru_to_en(unsigned iter, Words* wordlist)
     char translation_correct[] = "ВЕРНО.";
 
     char translation_incorrect[MAX_STRING_SIZE + 64];
-    sprintf(translation_incorrect, "НЕВЕРНО.\nПравильно: %s.", wordlist[index].translate_from);
+    sprintf(translation_incorrect,
+            "НЕВЕРНО.\nПравильно: %s.",
+            wordlist[index].translate_from);
 
     char input[MAX_STRING_SIZE];
 
-    border_print(translation1,
-                 valign('c', getmaxy(stdscr), 0, 15), 0, valign('c', getmaxy(stdscr), 5, 15), getmaxx(stdscr), 'c', 'b');
-    border_print(translation2,
-                 valign('c', getmaxy(stdscr), 6, 15), 0, valign('c', getmaxy(stdscr), 8, 15), getmaxx(stdscr), 'c', 'b');
+    border_print(
+            translation1,
+            valign('c', getmaxy(stdscr), 0, 15),
+            0,
+            valign('c', getmaxy(stdscr), 5, 15),
+            getmaxx(stdscr),
+            'c',
+            'b');
+    border_print(
+            translation2,
+            valign('c', getmaxy(stdscr), 6, 15),
+            0,
+            valign('c', getmaxy(stdscr), 8, 15),
+            getmaxx(stdscr),
+            'c',
+            'b');
 
-    move(valign('c', getmaxy(stdscr), 9, 15), halign(translation2, 'c', getmaxx(stdscr) + 1));
+    move(valign('c', getmaxy(stdscr), 9, 15),
+         halign(translation2, 'c', getmaxx(stdscr) + 1));
     scanw("%s", input);
 
     curs_set(0);
     if (strcmp(input, wordlist[index].translate_from))
-        border_print(translation_incorrect,
-                     valign('c', getmaxy(stdscr), 12, 15), 0, valign('c', getmaxy(stdscr), 15, 15), getmaxx(stdscr), 'c', 'u');
+        border_print(
+                translation_incorrect,
+                valign('c', getmaxy(stdscr), 12, 15),
+                0,
+                valign('c', getmaxy(stdscr), 15, 15),
+                getmaxx(stdscr),
+                'c',
+                'u');
     else {
-        border_print(translation_correct,
-                     valign('c', getmaxy(stdscr), 12, 15), 0, valign('c', getmaxy(stdscr), 15, 15), getmaxx(stdscr), 'c', 'u');
+        border_print(
+                translation_correct,
+                valign('c', getmaxy(stdscr), 12, 15),
+                0,
+                valign('c', getmaxy(stdscr), 15, 15),
+                getmaxx(stdscr),
+                'c',
+                'u');
         is_correct = 1;
     }
     getch();
@@ -155,17 +219,36 @@ void menu_call_difficulty()
     char pick;
 
     char difficulty1[] = "Вы можете выбрать количество слов для тренировки:";
-    char difficulty2[] = "1. 10 слов;\n"\
-                         "2. 15 слов;\n"\
-                         "3. 20 слов.";
+    char difficulty2[]
+            = "1. 10 слов;\n"
+              "2. 15 слов;\n"
+              "3. 20 слов.";
     char difficulty3[] = "Введите цифру варианта.";
-    
-    border_print(difficulty1,
-                 valign('c', getmaxy(stdscr), 0, 15), 0, valign('c', getmaxy(stdscr), 5, 15), getmaxx(stdscr), 'c', 'b');
-    border_print(difficulty2,
-                 valign('c', getmaxy(stdscr), 6, 15), 0, valign('c', getmaxy(stdscr), 12, 15), getmaxx(stdscr), 'c', 'c');
-    border_print(difficulty3,
-                 valign('c', getmaxy(stdscr), 13, 15), 0, valign('c', getmaxy(stdscr), 14, 15), getmaxx(stdscr), 'c', 'u');
+
+    border_print(
+            difficulty1,
+            valign('c', getmaxy(stdscr), 0, 15),
+            0,
+            valign('c', getmaxy(stdscr), 5, 15),
+            getmaxx(stdscr),
+            'c',
+            'b');
+    border_print(
+            difficulty2,
+            valign('c', getmaxy(stdscr), 6, 15),
+            0,
+            valign('c', getmaxy(stdscr), 12, 15),
+            getmaxx(stdscr),
+            'c',
+            'c');
+    border_print(
+            difficulty3,
+            valign('c', getmaxy(stdscr), 13, 15),
+            0,
+            valign('c', getmaxy(stdscr), 14, 15),
+            getmaxx(stdscr),
+            'c',
+            'u');
     curs_set(0);
     noecho();
 
@@ -185,12 +268,19 @@ void menu_call_variant()
 {
     char pick;
 
-    char variant[] = "1. С английского на русский.\n"\
-                     "2. С русского на английский.\n \n"\
-                     "Для выбора введите нужную цифру.";
+    char variant[]
+            = "1. С английского на русский.\n"
+              "2. С русского на английский.\n \n"
+              "Для выбора введите нужную цифру.";
 
-    border_print(variant,
-                 valign('c', getmaxy(stdscr), 0, 10), 0, valign('c', getmaxy(stdscr), 9, 10), getmaxx(stdscr), 'c', 'u');
+    border_print(
+            variant,
+            valign('c', getmaxy(stdscr), 0, 10),
+            0,
+            valign('c', getmaxy(stdscr), 9, 10),
+            getmaxx(stdscr),
+            'c',
+            'u');
     curs_set(0);
     noecho();
 
@@ -215,16 +305,31 @@ void menu_call_main()
 {
     char pick;
 
-    char welcome1[] = "МЕНЮ\n \n"\
-                      "Добро пожаловать в WordPractice, программу для заучивания иноязычных слов!";
-    char welcome2[] = "Выберите:\n"\
-                      "1. Начать!\n"\
-                      "2. Выход.\n";
+    char welcome1[]
+            = "МЕНЮ\n \n"
+              "Добро пожаловать в WordPractice, программу для заучивания "
+              "иноязычных слов!";
+    char welcome2[]
+            = "Выберите:\n"
+              "1. Начать!\n"
+              "2. Выход.\n";
 
-    border_print(welcome1,
-                 valign('c', getmaxy(stdscr), 0, 15), 0, valign('c', getmaxy(stdscr), 10, 15), getmaxx(stdscr), 'c', 'c');
-    border_print(welcome2,
-                 valign('c', getmaxy(stdscr), 11, 15), 0, valign('c', getmaxy(stdscr), 14, 15), getmaxx(stdscr), 'c', 'u');
+    border_print(
+            welcome1,
+            valign('c', getmaxy(stdscr), 0, 15),
+            0,
+            valign('c', getmaxy(stdscr), 10, 15),
+            getmaxx(stdscr),
+            'c',
+            'c');
+    border_print(
+            welcome2,
+            valign('c', getmaxy(stdscr), 11, 15),
+            0,
+            valign('c', getmaxy(stdscr), 14, 15),
+            getmaxx(stdscr),
+            'c',
+            'u');
     curs_set(0);
     noecho();
 

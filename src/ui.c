@@ -162,5 +162,8 @@ void border_print(
     unsigned count = split_align_string(text, width, substrings);
 
     for (unsigned i = 0; i < count; i++)
-        mvprintw(valign(vertical, height, i, count) + up_y, halign(substrings[i], horizontal, width) + left_x, substrings[i]);
+        mvprintw(
+                valign(vertical, height, i, count) + up_y,
+                halign(substrings[i], horizontal, width) + left_x,
+                substrings[i]);
 }
