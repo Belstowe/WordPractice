@@ -1,6 +1,6 @@
 # WordPractice [![Build Status](https://travis-ci.org/Belstowe/WordPractice.svg?branch=master)](https://travis-ci.org/github/Belstowe/WordPractice)
 
-**WordPractice** — программа для заучивания иноязычных слов. 
+**WordPractice** — консольная программа для заучивания иноязычных слов. Предназначена для использования на ОС **GNU/Linux**, но в будущем планируется возможность компиляции для **Microsoft Windows**. Написана на языке программирования **Си** стандарта **C99**.
 
 ## Применение
 WordPractice запускается из консоли следующим образом:
