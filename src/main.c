@@ -1,4 +1,4 @@
-#include "curses.h"
+#include "menus.h"
 
 #include <locale.h>
 #include <ncurses.h>
