@@ -5,10 +5,29 @@
 #include <ncurses.h>
 #include <string.h>
 
+#define MIN_WIDTH 40
+#define MIN_HEIGHT 15
+
 extern char* filename;
 int iterations = 0; // Количество "номеров" в задании
 int* order;
 enum Menu gamemode = Exit;
+
+/* menu_call_resolution
+ * Меню просьбы сменить разрешение, если оно меньше требуемого.
+ */
+void menu_call_resolution(enum Menu pending_menu)
+{
+    char resolution_beg[] = "Пожалуйста, смените разрешение на более высокое, затем нажмите любую клавишу, чтобы продолжить.";
+    
+    border_print(resolution_beg,
+                 0, 0, getmaxy(stdscr), getmaxx(stdscr), 'c', 'c');
+
+    curs_set(0);
+    getch();
+    menu_call(pending_menu);
+}
+
 
 /* menu_call_result
  * Меню отображения результата. На вход принимает число правильных результатов.
@@ -148,6 +167,7 @@ void menu_call_difficulty()
     border_print(difficulty3,
                  valign('c', getmaxy(stdscr), 13, 15), 0, valign('c', getmaxy(stdscr), 14, 15), getmaxx(stdscr), 'c', 'u');
     curs_set(0);
+    noecho();
 
     do {
         pick = getch();
@@ -172,6 +192,7 @@ void menu_call_variant()
     border_print(variant,
                  valign('c', getmaxy(stdscr), 0, 10), 0, valign('c', getmaxy(stdscr), 9, 10), getmaxx(stdscr), 'c', 'u');
     curs_set(0);
+    noecho();
 
     do {
         pick = getch();
@@ -205,6 +226,7 @@ void menu_call_main()
     border_print(welcome2,
                  valign('c', getmaxy(stdscr), 11, 15), 0, valign('c', getmaxy(stdscr), 14, 15), getmaxx(stdscr), 'c', 'u');
     curs_set(0);
+    noecho();
 
     do {
         pick = getch();
@@ -222,6 +244,12 @@ void menu_call(enum Menu menu_type)
     clear();
 
     curs_set(1);
+    echo();
+
+    if ((getmaxx(stdscr) < MIN_WIDTH) || (getmaxy(stdscr) < MIN_HEIGHT)) {
+        menu_call_resolution(menu_type);
+        return;
+    }
 
     switch (menu_type) {
     case Main:
