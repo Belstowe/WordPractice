@@ -1,7 +1,7 @@
 #include "menus.h"
 #include "func.h"
 #include "ui.h"
-
+#include <stdlib.h>
 #include <ncurses.h>
 #include <string.h>
 
@@ -319,7 +319,8 @@ void menu_call_variant()
 
     char variant[]
             = "1. С английского на русский.\n"
-              "2. С русского на английский.\n \n"
+              "2. С русского на английский.\n"
+	      "3. Тестирование\n\n"
               "Для выбора введите нужную цифру.";
 
     border_print(
@@ -335,12 +336,13 @@ void menu_call_variant()
 
     do {
         pick = getch();
-    } while (pick < '1' || pick > '2');
+    } while (pick < '1' || pick > '3');
 
     if (pick == '1')
         gamemode = ModeEnToRu;
-    else
-        gamemode = ModeRuToEn;
+    else if (pick == '2') 
+	gamemode = ModeRuToEn;
+    else gamemode = ModeTesting;
 
     menu_call(Difficulty);
 }
@@ -427,6 +429,13 @@ void menu_call(enum Menu menu_type)
         menu_call_result(
                 menu_call_type_ru_to_en(0, wordlist_form(filename, &order)));
         break;
+
+    case ModeTesting:
+	menu_call_result(
+	    menu_call_type_testing(0, wordlist_form(filename, &order),
+		file_word_pairs_count(filename)));
+	break;
+
 
     default:
         break;
