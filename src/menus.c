@@ -51,25 +51,73 @@ unsigned menu_call_type_testing(unsigned iter, Words* wordlist, int wordnum)
     else massive =random_order(index-3,index);
 
     char input[MAX_STRING_SIZE];
+     char translation1[MAX_STRING_SIZE + 64];
+    sprintf(translation1, "%d:\n%s", iter + 1, wordlist[index].translate_from);
 
-    printw("Выберите номер правильного перевода:\t ");
-    printw ("%d %s\n",iter+1, wordlist[index].translate_from);
+    char translation2[]="Выберите номер правильного перевода:\t ";
+
+    border_print(
+            translation1,
+            valign('c', getmaxy(stdscr), 0, 15),
+            0,
+            valign('c', getmaxy(stdscr), 5, 15),
+            getmaxx(stdscr),
+            'c',
+            'b');
+    border_print(
+            translation2,
+            valign('c', getmaxy(stdscr), 6, 15),
+            0,
+            valign('c', getmaxy(stdscr), 8, 15),
+            getmaxx(stdscr),
+            'c',
+            'b');
+
+//    move(valign('c', getmaxy(stdscr), 9, 15),
+//         halign(translation2, 'c', getmaxx(stdscr) + 1));
+
     int right_answer=-1;
-
+    int t=9;
     for (int i = 1; i <5 ;i++){
-        printw("%d. %s\n" ,i, wordlist[*massive].translate_to);
+	move(valign('c', getmaxy(stdscr), t, 15),
+            halign(translation2, 'c', getmaxx(stdscr)+1));
+		  t++;
+
+        printw("%d. %s" ,i, wordlist[*massive].translate_to);
 	if (*massive == index)
 	    right_answer = i;
 	massive=massive+1;
 
 }
+    move(valign('c', getmaxy(stdscr), 13, 15),
+            halign(translation2, 'c', getmaxx(stdscr)+1));
+
     scanw("%s", input);
 
+    char translation_correct[] = "ВЕРНО.";
+    char translation_incorrect[] = "НЕВЕРНО.";
+
     if (atoi(input)==right_answer){
-	printw("ВЕРНО.\n");
 	is_correct = 1;
+	border_print(
+                translation_correct,
+                valign('c', getmaxy(stdscr), 14, 15),
+                0,
+                valign('c', getmaxy(stdscr), 15, 15),
+                getmaxx(stdscr),
+                'c',
+                'u');
+
+    }    else {
+	border_print(
+                translation_incorrect,
+                valign('c', getmaxy(stdscr), 14, 15),
+                0,
+                valign('c', getmaxy(stdscr), 15, 15),
+                getmaxx(stdscr),
+                'c',
+                'u');
     }
-    else printw("НЕВЕРНО.\n");
 
     getch();
 
