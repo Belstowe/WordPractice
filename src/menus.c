@@ -30,6 +30,55 @@ void menu_call_resolution(enum Menu pending_menu)
     menu_call(pending_menu);
 }
 
+/* menu_call_type_testing
+ * Меню игры - выбор правильного ответа из четырех вариантов.
+ * Рекурсивная функция, которая вызывает себя ровно указанное количество
+ * итераций.
+ * Возвращает количество правильных результатов.
+ */
+
+unsigned menu_call_type_testing(unsigned iter, Words* wordlist, int wordnum)
+{
+    if (iter == iterations)
+	return 0;
+
+    unsigned is_correct = 0;
+    const int index = order[iter];
+    int*  massive;
+
+    if ( index < (wordnum -3))
+	massive = random_order(index,index+3);
+    else massive =random_order(index-3,index);
+
+    char input[MAX_STRING_SIZE];
+
+    printw("Выберите номер правильного перевода:\t ");
+    printw ("%d %s\n",iter+1, wordlist[index].translate_from);
+    int right_answer=-1;
+
+    for (int i = 1; i <5 ;i++){
+        printw("%d. %s\n" ,i, wordlist[*massive].translate_to);
+	if (*massive == index)
+	    right_answer = i;
+	massive=massive+1;
+
+}
+    scanw("%s", input);
+
+    if (atoi(input)==right_answer){
+	printw("ВЕРНО.\n");
+	is_correct = 1;
+    }
+    else printw("НЕВЕРНО.\n");
+
+    getch();
+
+    clear();
+
+    return is_correct + menu_call_type_testing(iter + 1, wordlist, wordnum);
+}
+
+
 /* menu_call_result
  * Меню отображения результата. На вход принимает число правильных результатов.
  */
