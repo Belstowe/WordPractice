@@ -526,8 +526,8 @@ void menu_call(enum Menu menu_type)
         break;
 
     case CustomDifficulty:
-    	menu_call_custom_difficulty();
-    	break;
+        menu_call_custom_difficulty();
+        break;
 
     case ModeEnToRu:
         menu_call_result(
