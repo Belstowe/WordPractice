@@ -305,20 +305,54 @@ unsigned menu_call_type_ru_to_en(unsigned iter, Words* wordlist)
     return is_correct + menu_call_type_ru_to_en(iter + 1, wordlist);
 }
 
+/* menu_call_custom_difficulty
+ * Меню произвольного выбора сложности.
+ * Вызывает впоследствии меню игры, в зависимости от выбранного перед этим
+ * режима.
+ */
+void menu_call_custom_difficulty()
+{
+    char cdifficulty1[MAX_STRING_SIZE];
+    sprintf(cdifficulty1,
+            "Наберите количество слов для тренировки (1-%d): ",
+            iterations);
+
+    border_print(
+            cdifficulty1,
+            valign('c', getmaxy(stdscr), 0, 15),
+            0,
+            valign('c', getmaxy(stdscr), 5, 15),
+            getmaxx(stdscr),
+            'c',
+            'b');
+
+    int pick;
+    scanw("%d", &pick);
+
+    while ((pick < 1) || (pick > iterations)) {
+        menu_call(Difficulty);
+        return;
+    }
+
+    iterations = pick;
+    menu_call(gamemode);
+}
+
 /* menu_call_difficulty
  * Меню выбора сложности.
  * Вызывает впоследствии меню игры, в зависимости от выбранного перед этим
- * режима.
+ * режима, если не был выбран пункт произвольного числа слов.
  */
 void menu_call_difficulty()
 {
     char pick;
+    short point = 1;
+    iterations = file_word_pairs_count(filename);
 
     char difficulty1[] = "Вы можете выбрать количество слов для тренировки:";
-    char difficulty2[]
-            = "1. 10 слов;\n"
-              "2. 15 слов;\n"
-              "3. 20 слов.";
+
+    char difficulty2[MAX_STRING_SIZE];
+
     char difficulty3[] = "Введите цифру варианта.";
 
     border_print(
@@ -329,14 +363,30 @@ void menu_call_difficulty()
             getmaxx(stdscr),
             'c',
             'b');
+
+    for (int iter_num = 10; iter_num <= 20 && iter_num < iterations;
+         iter_num += 5) {
+        sprintf(difficulty2, "%d. %d слов;\n", point, iter_num);
+        border_print(
+                difficulty2,
+                valign('c', getmaxy(stdscr), point + 5, 15),
+                0,
+                valign('c', getmaxy(stdscr), point + 6, 15),
+                getmaxx(stdscr),
+                'c',
+                'c');
+        point++;
+    }
+    sprintf(difficulty2, "%d. Произвольное число слов.", point);
     border_print(
             difficulty2,
-            valign('c', getmaxy(stdscr), 6, 15),
+            valign('c', getmaxy(stdscr), point + 5, 15),
             0,
-            valign('c', getmaxy(stdscr), 12, 15),
+            valign('c', getmaxy(stdscr), point + 6, 15),
             getmaxx(stdscr),
             'c',
             'c');
+
     border_print(
             difficulty3,
             valign('c', getmaxy(stdscr), 13, 15),
@@ -350,7 +400,12 @@ void menu_call_difficulty()
 
     do {
         pick = getch();
-    } while (pick < '1' || pick > '3');
+    } while (pick < '1' || pick > point + '0');
+
+    if (pick == point + '0') {
+        menu_call(CustomDifficulty);
+        return;
+    }
 
     iterations = (pick - '1') * 5 + 10;
     menu_call(gamemode);
@@ -469,6 +524,10 @@ void menu_call(enum Menu menu_type)
     case Difficulty:
         menu_call_difficulty();
         break;
+
+    case CustomDifficulty:
+    	menu_call_custom_difficulty();
+    	break;
 
     case ModeEnToRu:
         menu_call_result(
