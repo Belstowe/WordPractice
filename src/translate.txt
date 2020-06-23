@@ -15,7 +15,7 @@ well хорошо
 day день
 evening вечер
 hour час
-minute минут
+minute минута
 life жизнь
 morning утро
 time время
