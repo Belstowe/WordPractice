@@ -46,10 +46,10 @@ unsigned menu_call_type_testing(unsigned iter, Words* wordlist, int wordnum)
     const int index = order[iter];
     int* massive;
 
-    if ( index < (wordnum -3))
-	massive = random_order(index,index+3);
-    else 
-	massive =random_order(index-3,index);
+    if (index < (wordnum - 3))
+	massive = random_order(index, index + 3);
+    else
+	massive = random_order(index - 3, index);
 
     char input[MAX_STRING_SIZE];
     char translation1[MAX_STRING_SIZE + 64];
@@ -76,19 +76,18 @@ unsigned menu_call_type_testing(unsigned iter, Words* wordlist, int wordnum)
 
     int right_answer = -1;
     int t = 9;
-    for (int i = 1; i < 5; i++){
+    for (int i = 1; i < 5; i++) {
 	move(valign('c', getmaxy(stdscr), t, 15),
             halign(translation2, 'c', getmaxx(stdscr)+1));
 	t++;
 
-        printw("%d. %s" ,i, wordlist[*massive].translate_to);
+        printw("%d. %s" , i, wordlist[*massive].translate_to);
 	if (*massive == index)
 	    right_answer = i;
-	massive=massive+1;
-
+	massive = massive + 1;
     }
     move(valign('c', getmaxy(stdscr), 13, 15),
-	halign(translation2, 'c', getmaxx(stdscr)+1));
+	 halign(translation2, 'c', getmaxx(stdscr)+1));
 
     scanw("%s", input);
 
@@ -316,7 +315,7 @@ void menu_call_difficulty()
     char difficulty1[] = "Вы можете выбрать количество слов для тренировки:";
     char difficulty2[]
             = "1. 10 слов;\n"
-              "2. 15 слов;\n"
+	      "2. 15 слов;\n"
               "3. 20 слов.";
     char difficulty3[] = "Введите цифру варианта.";
 
@@ -385,8 +384,8 @@ void menu_call_variant()
     } while (pick < '1' || pick > '3');
 
     if (pick == '1')
-        gamemode = ModeEnToRu;
-    else if (pick == '2') 
+	gamemode = ModeEnToRu;
+    else if (pick == '2')
 	gamemode = ModeRuToEn;
     else 
 	gamemode = ModeTesting;
@@ -473,13 +472,13 @@ void menu_call(enum Menu menu_type)
         break;
 
     case ModeRuToEn:
-        menu_call_result(
-                menu_call_type_ru_to_en(0, wordlist_form(filename, &order)));
+	menu_call_result(
+		menu_call_type_ru_to_en(0, wordlist_form(filename, &order)));
         break;
 
     case ModeTesting:
 	menu_call_result(menu_call_type_testing(
-		0, 
+		0,
 		wordlist_form(filename, &order),
 		file_word_pairs_count(filename)));
 	break;
