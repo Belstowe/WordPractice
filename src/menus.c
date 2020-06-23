@@ -55,7 +55,7 @@ unsigned menu_call_type_testing(unsigned iter, Words* wordlist, int wordnum)
     char translation1[MAX_STRING_SIZE + 64];
     sprintf(translation1, "%d:\n%s", iter + 1, wordlist[index].translate_from);
 
-    char translation2[] = "Выберите номер правильного перевода:\t ";
+    char translation2[] = "Выберите номер правильного перевода:";
 
     border_print(
             translation1,
@@ -92,7 +92,10 @@ unsigned menu_call_type_testing(unsigned iter, Words* wordlist, int wordnum)
     scanw("%s", input);
 
     char translation_correct[] = "ВЕРНО.";
-    char translation_incorrect[] = "НЕВЕРНО.";
+    char translation_incorrect[MAX_STRING_SIZE];
+    sprintf(translation_incorrect,
+            "НЕВЕРНО.\nПравильный вариант: %d.",
+            right_answer);
 
     if (atoi(input) == right_answer) {
         is_correct = 1;
@@ -362,9 +365,11 @@ void menu_call_variant()
     char pick;
 
     char variant[]
-            = "1. С английского на русский.\n"
+            = "Ручной перевод:\n"
+              "1. С английского на русский;\n"
               "2. С русского на английский.\n"
-              "3. Тестирование\n\n"
+              "Соотнесение слова с одним из вариантов перевода:\n"
+              "3. С английского на русский.\n\n"
               "Для выбора введите нужную цифру.";
 
     border_print(
