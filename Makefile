@@ -1,6 +1,6 @@
 C = gcc
-compile_flag = -Wall -c
-debug_compile_flag = -O0 -g -Wall -c
+compile_flag = -std=c99 -Wall -c
+debug_compile_flag = -O0 -g -std=c99 -Wall -c
 lib = -lncursesw
 include_local_lib = -I ./src -I ./ctest
 
@@ -16,7 +16,9 @@ debug: clean Main.od Menus.od Func.od Ui.od
 
 test: clean TMain.o Menus.o Func.o TFunc.o Ui.o TUi.o
 	$(C) ./build/src/*.o ./build/test/*.o -o ./bin/test $(lib)
-	cp ./src/translate.txt ./bin/
+	cp ./src/translate.txt ./
+	./bin/test
+	rm -f ./bin/test translate.txt
 
 clean:
 	rm -rf ./build/*.o ./build/src/*.o

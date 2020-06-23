@@ -9,9 +9,6 @@ compiler:
 script:
     - git ls-files src/*.c src/*.h test/*.c | xargs clang-format -i && git diff --exit-code
     - make test
-    - cd bin
-    - ./test
-    - cd ..
     - make
 
 dist: xenial
