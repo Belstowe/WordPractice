@@ -1,8 +1,8 @@
 #include "menus.h"
 #include "func.h"
 #include "ui.h"
-#include <stdlib.h>
 #include <ncurses.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define MIN_WIDTH 40
@@ -44,17 +44,18 @@ unsigned menu_call_type_testing(unsigned iter, Words* wordlist, int wordnum)
 
     unsigned is_correct = 0;
     const int index = order[iter];
-    int*  massive;
+    int* massive;
 
     if ( index < (wordnum -3))
 	massive = random_order(index,index+3);
-    else massive =random_order(index-3,index);
+    else 
+	massive =random_order(index-3,index);
 
     char input[MAX_STRING_SIZE];
-     char translation1[MAX_STRING_SIZE + 64];
+    char translation1[MAX_STRING_SIZE + 64];
     sprintf(translation1, "%d:\n%s", iter + 1, wordlist[index].translate_from);
 
-    char translation2[]="Выберите номер правильного перевода:\t ";
+    char translation2[] = "Выберите номер правильного перевода:\t ";
 
     border_print(
             translation1,
@@ -73,31 +74,28 @@ unsigned menu_call_type_testing(unsigned iter, Words* wordlist, int wordnum)
             'c',
             'b');
 
-//    move(valign('c', getmaxy(stdscr), 9, 15),
-//         halign(translation2, 'c', getmaxx(stdscr) + 1));
-
-    int right_answer=-1;
-    int t=9;
-    for (int i = 1; i <5 ;i++){
+    int right_answer = -1;
+    int t = 9;
+    for (int i = 1; i < 5; i++){
 	move(valign('c', getmaxy(stdscr), t, 15),
             halign(translation2, 'c', getmaxx(stdscr)+1));
-		  t++;
+	t++;
 
         printw("%d. %s" ,i, wordlist[*massive].translate_to);
 	if (*massive == index)
 	    right_answer = i;
 	massive=massive+1;
 
-}
+    }
     move(valign('c', getmaxy(stdscr), 13, 15),
-            halign(translation2, 'c', getmaxx(stdscr)+1));
+	halign(translation2, 'c', getmaxx(stdscr)+1));
 
     scanw("%s", input);
 
     char translation_correct[] = "ВЕРНО.";
     char translation_incorrect[] = "НЕВЕРНО.";
 
-    if (atoi(input)==right_answer){
+    if (atoi(input) == right_answer) {
 	is_correct = 1;
 	border_print(
                 translation_correct,
@@ -108,7 +106,7 @@ unsigned menu_call_type_testing(unsigned iter, Words* wordlist, int wordnum)
                 'c',
                 'u');
 
-    }    else {
+    } else {
 	border_print(
                 translation_incorrect,
                 valign('c', getmaxy(stdscr), 14, 15),
@@ -161,7 +159,7 @@ void menu_call_result(unsigned correct_answers)
 unsigned menu_call_type_en_to_ru(unsigned iter, Words* wordlist)
 {
     if (iter == iterations)
-        return 0;
+	return 0;
 
     unsigned is_correct = 0;
     const int index = order[iter];
@@ -367,7 +365,7 @@ void menu_call_variant()
 
     char variant[]
             = "1. С английского на русский.\n"
-              "2. С русского на английский.\n"
+	      "2. С русского на английский.\n"
 	      "3. Тестирование\n\n"
               "Для выбора введите нужную цифру.";
 
@@ -390,7 +388,8 @@ void menu_call_variant()
         gamemode = ModeEnToRu;
     else if (pick == '2') 
 	gamemode = ModeRuToEn;
-    else gamemode = ModeTesting;
+    else 
+	gamemode = ModeTesting;
 
     menu_call(Difficulty);
 }
@@ -479,8 +478,9 @@ void menu_call(enum Menu menu_type)
         break;
 
     case ModeTesting:
-	menu_call_result(
-	    menu_call_type_testing(0, wordlist_form(filename, &order),
+	menu_call_result(menu_call_type_testing(
+		0, 
+		wordlist_form(filename, &order),
 		file_word_pairs_count(filename)));
 	break;
 
