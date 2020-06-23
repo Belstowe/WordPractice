@@ -1,6 +1,6 @@
 C = gcc
-compile_flag = -Wall -c
-debug_compile_flag = -O0 -g -Wall -c
+compile_flag = -std=c99 -Wall -c
+debug_compile_flag = -O0 -g -std=c99 -Wall -c
 lib = -lncursesw
 include_local_lib = -I ./src -I ./ctest
 
