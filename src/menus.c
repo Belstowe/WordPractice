@@ -40,16 +40,16 @@ void menu_call_resolution(enum Menu pending_menu)
 unsigned menu_call_type_testing(unsigned iter, Words* wordlist, int wordnum)
 {
     if (iter == iterations)
-	return 0;
+        return 0;
 
     unsigned is_correct = 0;
     const int index = order[iter];
     int* massive;
 
     if (index < (wordnum - 3))
-	massive = random_order(index, index + 3);
+        massive = random_order(index, index + 3);
     else
-	massive = random_order(index - 3, index);
+        massive = random_order(index - 3, index);
 
     char input[MAX_STRING_SIZE];
     char translation1[MAX_STRING_SIZE + 64];
@@ -77,17 +77,17 @@ unsigned menu_call_type_testing(unsigned iter, Words* wordlist, int wordnum)
     int right_answer = -1;
     int t = 9;
     for (int i = 1; i < 5; i++) {
-	move(valign('c', getmaxy(stdscr), t, 15),
-            halign(translation2, 'c', getmaxx(stdscr)+1));
-	t++;
+        move(valign('c', getmaxy(stdscr), t, 15),
+             halign(translation2, 'c', getmaxx(stdscr) + 1));
+        t++;
 
-        printw("%d. %s" , i, wordlist[*massive].translate_to);
-	if (*massive == index)
-	    right_answer = i;
-	massive = massive + 1;
+        printw("%d. %s", i, wordlist[*massive].translate_to);
+        if (*massive == index)
+            right_answer = i;
+        massive = massive + 1;
     }
     move(valign('c', getmaxy(stdscr), 13, 15),
-	 halign(translation2, 'c', getmaxx(stdscr)+1));
+         halign(translation2, 'c', getmaxx(stdscr) + 1));
 
     scanw("%s", input);
 
@@ -95,8 +95,8 @@ unsigned menu_call_type_testing(unsigned iter, Words* wordlist, int wordnum)
     char translation_incorrect[] = "НЕВЕРНО.";
 
     if (atoi(input) == right_answer) {
-	is_correct = 1;
-	border_print(
+        is_correct = 1;
+        border_print(
                 translation_correct,
                 valign('c', getmaxy(stdscr), 14, 15),
                 0,
@@ -106,7 +106,7 @@ unsigned menu_call_type_testing(unsigned iter, Words* wordlist, int wordnum)
                 'u');
 
     } else {
-	border_print(
+        border_print(
                 translation_incorrect,
                 valign('c', getmaxy(stdscr), 14, 15),
                 0,
@@ -122,7 +122,6 @@ unsigned menu_call_type_testing(unsigned iter, Words* wordlist, int wordnum)
 
     return is_correct + menu_call_type_testing(iter + 1, wordlist, wordnum);
 }
-
 
 /* menu_call_result
  * Меню отображения результата. На вход принимает число правильных результатов.
@@ -158,7 +157,7 @@ void menu_call_result(unsigned correct_answers)
 unsigned menu_call_type_en_to_ru(unsigned iter, Words* wordlist)
 {
     if (iter == iterations)
-	return 0;
+        return 0;
 
     unsigned is_correct = 0;
     const int index = order[iter];
@@ -315,7 +314,7 @@ void menu_call_difficulty()
     char difficulty1[] = "Вы можете выбрать количество слов для тренировки:";
     char difficulty2[]
             = "1. 10 слов;\n"
-	      "2. 15 слов;\n"
+              "2. 15 слов;\n"
               "3. 20 слов.";
     char difficulty3[] = "Введите цифру варианта.";
 
@@ -364,8 +363,8 @@ void menu_call_variant()
 
     char variant[]
             = "1. С английского на русский.\n"
-	      "2. С русского на английский.\n"
-	      "3. Тестирование\n\n"
+              "2. С русского на английский.\n"
+              "3. Тестирование\n\n"
               "Для выбора введите нужную цифру.";
 
     border_print(
@@ -384,11 +383,11 @@ void menu_call_variant()
     } while (pick < '1' || pick > '3');
 
     if (pick == '1')
-	gamemode = ModeEnToRu;
+        gamemode = ModeEnToRu;
     else if (pick == '2')
-	gamemode = ModeRuToEn;
-    else 
-	gamemode = ModeTesting;
+        gamemode = ModeRuToEn;
+    else
+        gamemode = ModeTesting;
 
     menu_call(Difficulty);
 }
@@ -472,17 +471,16 @@ void menu_call(enum Menu menu_type)
         break;
 
     case ModeRuToEn:
-	menu_call_result(
-		menu_call_type_ru_to_en(0, wordlist_form(filename, &order)));
+        menu_call_result(
+                menu_call_type_ru_to_en(0, wordlist_form(filename, &order)));
         break;
 
     case ModeTesting:
-	menu_call_result(menu_call_type_testing(
-		0,
-		wordlist_form(filename, &order),
-		file_word_pairs_count(filename)));
-	break;
-
+        menu_call_result(menu_call_type_testing(
+                0,
+                wordlist_form(filename, &order),
+                file_word_pairs_count(filename)));
+        break;
 
     default:
         break;
