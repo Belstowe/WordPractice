@@ -3,6 +3,46 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* wl_append
+* Добавляет в конец списка элемент и возвращает его
+*/
+Wordlist *wl_append(Wordlist *root)
+{   
+    Wordlist *current = root;
+    while(current->next!=NULL){
+        current = current->next;
+    }
+    current->next = malloc(sizeof(Wordlist));
+    current->next->pair = malloc(sizeof(Words));
+    current->next->next=NULL;
+    return current->next;
+}
+
+/* wl_get
+* Получает элемент по индексу в списке и возвращает этот элемент
+*/
+Wordlist *wl_get(Wordlist *root, unsigned index)
+{
+    Wordlist *current = root;
+    for(unsigned i=0; (i<index) && (current!=NULL); i++){
+        current = current->next;
+    }
+    return current;
+}
+
+
+
+/* wl_size
+* Измерение длины списка и ее вывод
+*/
+unsigned wl_size(Wordlist *root)
+{   
+    unsigned counter = 0;
+    for(Wordlist* current = root; current!=NULL; current=current->next, counter++);
+    return counter;
+}
+
+
 /* get_random_int
  * Возвращает целое число в диапазоне от min до max (включая).
  */
@@ -43,60 +83,85 @@ int* random_order(const int min, const int max)
     return temp_arr;
 }
 
-/* file_word_pairs_count
- * Считывает пары слов в списке и возвращает их количество.
- */
-int file_word_pairs_count(char* IFILE)
-{
-    int wordnum = 0;
-    Words* nulwords = malloc(sizeof(Words));
-    FILE* f;
-    if ((f = fopen(IFILE, "r")) == NULL) {
-        perror("fopen");
-        exit(1);
-    }
-
-    while (fscanf(f, "%s %s", nulwords->translate_from, nulwords->translate_to)
-           == 2)
-        wordnum++;
-
-    fclose(f);
-    return wordnum;
-}
-
 /* file_word_pairs_read
- * Читает пары слов из списка и заносит их в массив пар слов words.
+ * Считывает пары слов в списке и возвращает их список
  */
-Words* file_word_pairs_read(char* IFILE, const int wordnum)
-{
-    Words* wordlist = malloc(wordnum * sizeof(Words));
-    if (wordlist == NULL)
-        return NULL;
+Wordlist* file_word_pairs_read(char* IFILE)
+{   
+    unsigned flag = 0;
+    
+    Wordlist* root = malloc(sizeof(Wordlist));
+    root->pair = malloc(sizeof(Words));
+    root->next=NULL;
+    int start;
+    start = 0;
+    Words* curpair = NULL;
 
     FILE* f;
     if ((f = fopen(IFILE, "r")) == NULL) {
         perror("fopen");
         exit(1);
     }
+        char c;
+        while ((c = fgetc(f)) !=EOF){
+            switch (c) {
+                case ':': 
+                    flag = 1;
+                    if (curpair == NULL){
+                        curpair = root->pair;
+                    }
+                    else{
+                        curpair = wl_append(root)->pair;
+                    }
+                break;
+                
+                case '=':
+                    flag = 2;
+                    curpair->translate_from[start]='\0';
+                    start=0;
+                break;
 
-    for (size_t i = 0; i < wordnum; i++)
-        fscanf(f,
-               "%s %s",
-               ((wordlist[i]).translate_from),
-               ((wordlist[i]).translate_to));
+                case ';':
+                    
+                    flag = 0;
+                    curpair->translate_to[start]='\0';
+                    start=0;
+                break;
+
+                case '.':
+                    fclose(f);
+                    return root;
+
+                default :
+                    if (flag == 1) {
+                        if ((c != ' ') && (c != '\n')) {
+                            
+                            curpair->translate_from[start++] = c;
+                        }
+                    }
+                    else if (flag == 2) {
+                        if ((c != ' ') && (c != '\n')) {
+                            
+                            curpair->translate_to[start++] = c;
+                        }
+                    }
+                break;
+            }
+    }
+    
 
     fclose(f);
-    return wordlist;
+    return root;
 }
 
 /* wordlist_form
  * Формирует список пар слов с помощью file_word_pairs_read и
  * file_word_pairs_count, возвращая указатель на него.
  */
-Words* wordlist_form(char* IFILE, int** order)
+Wordlist* wordlist_form(char* IFILE)
 {
-    const int wordnum = file_word_pairs_count(IFILE);
-    (*order) = random_order(0, wordnum - 1);
+    
 
-    return file_word_pairs_read(IFILE, wordnum);
+
+    return file_word_pairs_read(IFILE);
 }
