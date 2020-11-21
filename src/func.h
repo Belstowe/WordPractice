@@ -18,7 +18,6 @@ Wordlist *wl_get(Wordlist *root, unsigned index);
 unsigned wl_size(Wordlist *root);
 int get_random_int(int min, int max);
 int* random_order(const int min, const int max);
-Wordlist* file_word_pairs_read(char* IFILE);
 Wordlist* wordlist_form(char* IFILE);
 
 #endif

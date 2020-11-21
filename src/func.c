@@ -83,10 +83,10 @@ int* random_order(const int min, const int max)
     return temp_arr;
 }
 
-/* file_word_pairs_read
- * Считывает пары слов в списке и возвращает их список
+/* wordlist_form
+ * Считывает пары слов в файле списка и возвращает их список
  */
-Wordlist* file_word_pairs_read(char* IFILE)
+Wordlist* wordlist_form(char* IFILE)
 {   
     unsigned flag = 0;
     
@@ -181,16 +181,4 @@ Wordlist* file_word_pairs_read(char* IFILE)
 
     fclose(f);
     return root;
-}
-
-/* wordlist_form
- * Формирует список пар слов с помощью file_word_pairs_read и
- * file_word_pairs_count, возвращая указатель на него.
- */
-Wordlist* wordlist_form(char* IFILE)
-{
-    
-
-
-    return file_word_pairs_read(IFILE);
 }
