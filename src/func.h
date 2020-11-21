@@ -13,10 +13,13 @@ typedef struct t_wordlist {
     struct t_wordlist *next;
 } Wordlist;
 
+int get_random_int(int min, int max);
+unsigned strcnt(char *str, char chr);
+char *extract_random_substr(char *str, char *delim);
+int substrcmp(char *str1, char *str2, char *delim);
 Wordlist *wl_append(Wordlist *root);
 Wordlist *wl_get(Wordlist *root, unsigned index);
 unsigned wl_size(Wordlist *root);
-int get_random_int(int min, int max);
 int* random_order(const int min, const int max);
 Wordlist* wordlist_form(char* IFILE);
 

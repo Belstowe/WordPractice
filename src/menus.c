@@ -88,7 +88,7 @@ unsigned menu_call_type_testing(unsigned iter, Wordlist* wordlist)
              halign(translation2, 'c', getmaxx(stdscr) + 1));
         t++;
 
-        printw("%d. %s", i, wl_get(wordlist, *massive)->pair->translate_to);
+        printw("%d. %s", i, extract_random_substr(wl_get(wordlist, *massive)->pair->translate_to, "|"));
         if (*massive == index)
             right_answer = i;
         massive = massive + 1;
@@ -180,7 +180,7 @@ unsigned menu_call_type_en_to_ru(unsigned iter, Wordlist* wordlist)
     const int index = order[iter];
 
     char translation1[MAX_STRING_SIZE + 64];
-    sprintf(translation1, "%d:\n%s", iter + 1, wl_get(wordlist, index)->pair->translate_from);
+    sprintf(translation1, "%d:\n%s", iter + 1, extract_random_substr(wl_get(wordlist, index)->pair->translate_from, "|"));
 
     char translation2[] = "Введите перевод на русский: ";
 
@@ -215,7 +215,7 @@ unsigned menu_call_type_en_to_ru(unsigned iter, Wordlist* wordlist)
     scanw("%s", input);
 
     curs_set(0);
-    if (strcmp(input, wl_get(wordlist, index)->pair->translate_to))
+    if (substrcmp(input, wl_get(wordlist, index)->pair->translate_to, "|"))
         border_print(
                 translation_incorrect,
                 valign('c', getmaxy(stdscr), 12, 15),
@@ -264,7 +264,7 @@ unsigned menu_call_type_ru_to_en(unsigned iter, Wordlist* wordlist)
     const int index = order[iter];
 
     char translation1[MAX_STRING_SIZE + 64];
-    sprintf(translation1, "%d:\n%s", iter + 1, wl_get(wordlist, index)->pair->translate_to);
+    sprintf(translation1, "%d:\n%s", iter + 1, extract_random_substr(wl_get(wordlist, index)->pair->translate_to, "|"));
 
     char translation2[] = "Введите перевод на английский: ";
 
@@ -299,7 +299,7 @@ unsigned menu_call_type_ru_to_en(unsigned iter, Wordlist* wordlist)
     scanw("%s", input);
 
     curs_set(0);
-    if (strcmp(input, wl_get(wordlist, index)->pair->translate_from))
+    if (substrcmp(input, wl_get(wordlist, index)->pair->translate_from, "|"))
         border_print(
                 translation_incorrect,
                 valign('c', getmaxy(stdscr), 12, 15),

@@ -2,6 +2,73 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+/* get_random_int
+ * Возвращает целое число в диапазоне от min до max (включая).
+ */
+int get_random_int(int min, int max)
+{
+    return (double)rand() / (RAND_MAX + 1.0) * (max - min + 1) + min;
+}
+
+/* strcnt
+* Считает число вхождений некоего символа в строке
+*/
+unsigned strcnt(char *str, char chr)
+{
+    unsigned counter = 0;
+    while (*str != '\0') {
+        if (*str == chr) {
+            counter++;
+        }
+
+        str++;
+    }
+    return counter;
+}
+
+/* extract_random_substr
+* Извлекает случайную подстроку, разделенную неким delim
+*/
+char *extract_random_substr(char *str, char *delim)
+{
+    if (strcnt(str, *delim) == 0)
+        return str;
+
+    unsigned chosen = get_random_int(0, strcnt(str, *delim));
+    char *strcopy = malloc(MAX_STRING_SIZE * sizeof(char));
+    strcpy(strcopy, str);
+    char *pointer = strtok(strcopy, delim);
+    for (unsigned i = 0; i < chosen; i++) {
+        pointer = strtok(NULL, delim);
+    }
+
+    return pointer;
+}
+
+/* substrcmp
+* Проверяет, входит ли str1 в str2 как подстрока
+* Возвращает 0, если да; 1 / -1, если нет
+*/
+int substrcmp(char *str1, char *str2, char *delim)
+{
+    if (strcnt(str2, *delim) == 0)
+        return strcmp(str1, str2);
+
+    char *strcopy = malloc(MAX_STRING_SIZE * sizeof(char));
+    strcpy(strcopy, str2);
+    char *pointer = strtok(strcopy, delim);
+
+    while (pointer != NULL) {
+        if (!strcmp(str1, pointer)) {
+            return 0;
+        }
+        pointer = strtok(NULL, delim);
+    }
+
+    return 1;
+}
 
 /* wl_append
 * Добавляет в конец списка элемент и возвращает его
@@ -40,15 +107,6 @@ unsigned wl_size(Wordlist *root)
     unsigned counter = 0;
     for(Wordlist* current = root; current!=NULL; current=current->next, counter++);
     return counter;
-}
-
-
-/* get_random_int
- * Возвращает целое число в диапазоне от min до max (включая).
- */
-int get_random_int(int min, int max)
-{
-    return (double)rand() / (RAND_MAX + 1.0) * (max - min + 1) + min;
 }
 
 /* random_order
