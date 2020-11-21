@@ -13,9 +13,9 @@ int get_random_int(int min, int max)
 }
 
 /* strcnt
-* Считает число вхождений некоего символа в строке
-*/
-unsigned strcnt(char *str, char chr)
+ * Считает число вхождений некоего символа в строке
+ */
+unsigned strcnt(char* str, char chr)
 {
     unsigned counter = 0;
     while (*str != '\0') {
@@ -29,17 +29,17 @@ unsigned strcnt(char *str, char chr)
 }
 
 /* extract_random_substr
-* Извлекает случайную подстроку, разделенную неким delim
-*/
-char *extract_random_substr(char *str, char *delim)
+ * Извлекает случайную подстроку, разделенную неким delim
+ */
+char* extract_random_substr(char* str, char* delim)
 {
     if (strcnt(str, *delim) == 0)
         return str;
 
     unsigned chosen = get_random_int(0, strcnt(str, *delim));
-    char *strcopy = malloc(MAX_STRING_SIZE * sizeof(char));
+    char* strcopy = malloc(MAX_STRING_SIZE * sizeof(char));
     strcpy(strcopy, str);
-    char *pointer = strtok(strcopy, delim);
+    char* pointer = strtok(strcopy, delim);
     for (unsigned i = 0; i < chosen; i++) {
         pointer = strtok(NULL, delim);
     }
@@ -48,17 +48,17 @@ char *extract_random_substr(char *str, char *delim)
 }
 
 /* substrcmp
-* Проверяет, входит ли str1 в str2 как подстрока
-* Возвращает 0, если да; 1 / -1, если нет
-*/
-int substrcmp(char *str1, char *str2, char *delim)
+ * Проверяет, входит ли str1 в str2 как подстрока
+ * Возвращает 0, если да; 1 / -1, если нет
+ */
+int substrcmp(char* str1, char* str2, char* delim)
 {
     if (strcnt(str2, *delim) == 0)
         return strcmp(str1, str2);
 
-    char *strcopy = malloc(MAX_STRING_SIZE * sizeof(char));
+    char* strcopy = malloc(MAX_STRING_SIZE * sizeof(char));
     strcpy(strcopy, str2);
-    char *pointer = strtok(strcopy, delim);
+    char* pointer = strtok(strcopy, delim);
 
     while (pointer != NULL) {
         if (!strcmp(str1, pointer)) {
@@ -71,41 +71,41 @@ int substrcmp(char *str1, char *str2, char *delim)
 }
 
 /* wl_append
-* Добавляет в конец списка элемент и возвращает его
-*/
-Wordlist *wl_append(Wordlist *root)
-{   
-    Wordlist *current = root;
-    while(current->next!=NULL){
+ * Добавляет в конец списка элемент и возвращает его
+ */
+Wordlist* wl_append(Wordlist* root)
+{
+    Wordlist* current = root;
+    while (current->next != NULL) {
         current = current->next;
     }
     current->next = malloc(sizeof(Wordlist));
     current->next->pair = malloc(sizeof(Words));
-    current->next->next=NULL;
+    current->next->next = NULL;
     return current->next;
 }
 
 /* wl_get
-* Получает элемент по индексу в списке и возвращает этот элемент
-*/
-Wordlist *wl_get(Wordlist *root, unsigned index)
+ * Получает элемент по индексу в списке и возвращает этот элемент
+ */
+Wordlist* wl_get(Wordlist* root, unsigned index)
 {
-    Wordlist *current = root;
-    for(unsigned i=0; (i<index) && (current!=NULL); i++){
+    Wordlist* current = root;
+    for (unsigned i = 0; (i < index) && (current != NULL); i++) {
         current = current->next;
     }
     return current;
 }
 
-
-
 /* wl_size
-* Измерение длины списка и ее вывод
-*/
-unsigned wl_size(Wordlist *root)
-{   
+ * Измерение длины списка и ее вывод
+ */
+unsigned wl_size(Wordlist* root)
+{
     unsigned counter = 0;
-    for(Wordlist* current = root; current!=NULL; current=current->next, counter++);
+    for (Wordlist* current = root; current != NULL;
+         current = current->next, counter++)
+        ;
     return counter;
 }
 
@@ -145,12 +145,12 @@ int* random_order(const int min, const int max)
  * Считывает пары слов в файле списка и возвращает их список
  */
 Wordlist* wordlist_form(char* IFILE)
-{   
+{
     unsigned flag = 0;
-    
+
     Wordlist* root = malloc(sizeof(Wordlist));
     root->pair = malloc(sizeof(Words));
-    root->next=NULL;
+    root->next = NULL;
     int start;
     start = 0;
     Words* curpair = NULL;
@@ -160,82 +160,78 @@ Wordlist* wordlist_form(char* IFILE)
         perror("fopen");
         exit(1);
     }
-        char c;
-        while ((c = fgetc(f)) !=EOF){
-            switch (c) {
-                case ':':
-                    if (flag == 3) {
-                        break;
-                    }
-
-                    flag = 1;
-                    if (curpair == NULL){
-                        curpair = root->pair;
-                    }
-                    else{
-                        curpair = wl_append(root)->pair;
-                    }
-                break;
-                
-                case '=':
-                    if (flag == 3) {
-                        break;
-                    }
-
-                    flag = 2;
-                    curpair->translate_from[start]='\0';
-                    start=0;
-                break;
-
-                case ';':
-                    if (flag == 3) {
-                        break;
-                    }
-
-                    flag = 0;
-                    curpair->translate_to[start]='\0';
-                    start=0;
-                break;
-
-                case '/':
-                    if (flag == 0) {
-                        flag = 3;
-                    }
-                break;
-
-                case '.':
-                    if (flag == 3) {
-                        break;
-                    }
-                    fclose(f);
-                    return root;
-
-                default :
-                    if (flag == 1) {
-                        if ((c != ' ') && (c != '\n')) {
-                            if (c == '_') {
-                                c = ' ';
-                            }
-                            curpair->translate_from[start++] = c;
-                        }
-                    }
-                    else if (flag == 2) {
-                        if ((c != ' ') && (c != '\n')) {
-                            if (c == '_') {
-                                c = ' ';
-                            }
-                            curpair->translate_to[start++] = c;
-                        }
-                    }
-                    else if (flag == 3) {
-                        if (c == '\n') {
-                            flag=0;
-                        }
-                    }
+    char c;
+    while ((c = fgetc(f)) != EOF) {
+        switch (c) {
+        case ':':
+            if (flag == 3) {
                 break;
             }
+
+            flag = 1;
+            if (curpair == NULL) {
+                curpair = root->pair;
+            } else {
+                curpair = wl_append(root)->pair;
+            }
+            break;
+
+        case '=':
+            if (flag == 3) {
+                break;
+            }
+
+            flag = 2;
+            curpair->translate_from[start] = '\0';
+            start = 0;
+            break;
+
+        case ';':
+            if (flag == 3) {
+                break;
+            }
+
+            flag = 0;
+            curpair->translate_to[start] = '\0';
+            start = 0;
+            break;
+
+        case '/':
+            if (flag == 0) {
+                flag = 3;
+            }
+            break;
+
+        case '.':
+            if (flag == 3) {
+                break;
+            }
+            fclose(f);
+            return root;
+
+        default:
+            if (flag == 1) {
+                if ((c != ' ') && (c != '\n')) {
+                    if (c == '_') {
+                        c = ' ';
+                    }
+                    curpair->translate_from[start++] = c;
+                }
+            } else if (flag == 2) {
+                if ((c != ' ') && (c != '\n')) {
+                    if (c == '_') {
+                        c = ' ';
+                    }
+                    curpair->translate_to[start++] = c;
+                }
+            } else if (flag == 3) {
+                if (c == '\n') {
+                    flag = 0;
+                }
+            }
+            break;
+        }
     }
-    
 
     fclose(f);
     return root;
