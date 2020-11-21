@@ -18,7 +18,7 @@ CTEST(proper_working_assist, random_order_no_repeats)
 
 CTEST(extract_word_list, checking_right_list_size)
 {
-    const int expected = 4;
+    const int expected = 16;
 
     ASSERT_EQUAL(expected, wl_size(wordlist_form(filename)));
 }
