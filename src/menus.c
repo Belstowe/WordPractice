@@ -10,7 +10,7 @@
 
 extern char* filename;
 int iterations = 0; // Количество "номеров" в задании
-int* order;
+int* order = NULL;
 enum Menu gamemode = Exit;
 
 /* menu_call_resolution
@@ -37,23 +37,34 @@ void menu_call_resolution(enum Menu pending_menu)
  * Возвращает количество правильных результатов.
  */
 
-unsigned menu_call_type_testing(unsigned iter, Words* wordlist, int wordnum)
+unsigned menu_call_type_testing(unsigned iter, Wordlist* wordlist)
 {
-    if (iter == iterations)
+    if (iter == iterations) {
+        free(order);
+        order = NULL;
         return 0;
+    }
+
+    if (order == NULL) {
+        order = random_order(0, wl_size(wordlist) - 1);
+    }
 
     unsigned is_correct = 0;
     const int index = order[iter];
     int* massive;
 
-    if (index < (wordnum - 3))
+    if (index < (wl_size(wordlist) - 3))
         massive = random_order(index, index + 3);
     else
         massive = random_order(index - 3, index);
 
     char input[MAX_STRING_SIZE];
     char translation1[MAX_STRING_SIZE + 64];
-    sprintf(translation1, "%d:\n%s", iter + 1, wordlist[index].translate_from);
+    sprintf(translation1,
+            "%d:\n%s",
+            iter + 1,
+            extract_random_substr(
+                    wl_get(wordlist, index)->pair->translate_from, "|"));
 
     char translation2[] = "Выберите номер правильного перевода:";
 
@@ -81,7 +92,10 @@ unsigned menu_call_type_testing(unsigned iter, Words* wordlist, int wordnum)
              halign(translation2, 'c', getmaxx(stdscr) + 1));
         t++;
 
-        printw("%d. %s", i, wordlist[*massive].translate_to);
+        printw("%d. %s",
+               i,
+               extract_random_substr(
+                       wl_get(wordlist, *massive)->pair->translate_to, "|"));
         if (*massive == index)
             right_answer = i;
         massive = massive + 1;
@@ -123,7 +137,7 @@ unsigned menu_call_type_testing(unsigned iter, Words* wordlist, int wordnum)
 
     clear();
 
-    return is_correct + menu_call_type_testing(iter + 1, wordlist, wordnum);
+    return is_correct + menu_call_type_testing(iter + 1, wordlist);
 }
 
 /* menu_call_result
@@ -157,16 +171,27 @@ void menu_call_result(unsigned correct_answers)
  * итераций.
  * Возвращает количество правильных результатов.
  */
-unsigned menu_call_type_en_to_ru(unsigned iter, Words* wordlist)
+unsigned menu_call_type_en_to_ru(unsigned iter, Wordlist* wordlist)
 {
-    if (iter == iterations)
+    if (iter == iterations) {
+        free(order);
+        order = NULL;
         return 0;
+    }
+
+    if (order == NULL) {
+        order = random_order(0, wl_size(wordlist) - 1);
+    }
 
     unsigned is_correct = 0;
     const int index = order[iter];
 
     char translation1[MAX_STRING_SIZE + 64];
-    sprintf(translation1, "%d:\n%s", iter + 1, wordlist[index].translate_from);
+    sprintf(translation1,
+            "%d:\n%s",
+            iter + 1,
+            extract_random_substr(
+                    wl_get(wordlist, index)->pair->translate_from, "|"));
 
     char translation2[] = "Введите перевод на русский: ";
 
@@ -175,7 +200,7 @@ unsigned menu_call_type_en_to_ru(unsigned iter, Words* wordlist)
     char translation_incorrect[MAX_STRING_SIZE + 64];
     sprintf(translation_incorrect,
             "НЕВЕРНО.\nПравильно: %s.",
-            wordlist[index].translate_to);
+            wl_get(wordlist, index)->pair->translate_to);
 
     char input[MAX_STRING_SIZE];
 
@@ -198,10 +223,10 @@ unsigned menu_call_type_en_to_ru(unsigned iter, Words* wordlist)
 
     move(valign('c', getmaxy(stdscr), 9, 15),
          halign(translation2, 'c', getmaxx(stdscr) + 1));
-    scanw("%s", input);
+    getstr(input);
 
     curs_set(0);
-    if (strcmp(input, wordlist[index].translate_to))
+    if (substrcmp(input, wl_get(wordlist, index)->pair->translate_to, "|"))
         border_print(
                 translation_incorrect,
                 valign('c', getmaxy(stdscr), 12, 15),
@@ -234,16 +259,27 @@ unsigned menu_call_type_en_to_ru(unsigned iter, Words* wordlist)
  * итераций.
  * Возвращает количество правильных результатов.
  */
-unsigned menu_call_type_ru_to_en(unsigned iter, Words* wordlist)
+unsigned menu_call_type_ru_to_en(unsigned iter, Wordlist* wordlist)
 {
-    if (iter == iterations)
+    if (iter == iterations) {
+        free(order);
+        order = NULL;
         return 0;
+    }
+
+    if (order == NULL) {
+        order = random_order(0, wl_size(wordlist) - 1);
+    }
 
     unsigned is_correct = 0;
     const int index = order[iter];
 
     char translation1[MAX_STRING_SIZE + 64];
-    sprintf(translation1, "%d:\n%s", iter + 1, wordlist[index].translate_to);
+    sprintf(translation1,
+            "%d:\n%s",
+            iter + 1,
+            extract_random_substr(
+                    wl_get(wordlist, index)->pair->translate_to, "|"));
 
     char translation2[] = "Введите перевод на английский: ";
 
@@ -252,7 +288,7 @@ unsigned menu_call_type_ru_to_en(unsigned iter, Words* wordlist)
     char translation_incorrect[MAX_STRING_SIZE + 64];
     sprintf(translation_incorrect,
             "НЕВЕРНО.\nПравильно: %s.",
-            wordlist[index].translate_from);
+            wl_get(wordlist, index)->pair->translate_from);
 
     char input[MAX_STRING_SIZE];
 
@@ -275,10 +311,10 @@ unsigned menu_call_type_ru_to_en(unsigned iter, Words* wordlist)
 
     move(valign('c', getmaxy(stdscr), 9, 15),
          halign(translation2, 'c', getmaxx(stdscr) + 1));
-    scanw("%s", input);
+    getstr(input);
 
     curs_set(0);
-    if (strcmp(input, wordlist[index].translate_from))
+    if (substrcmp(input, wl_get(wordlist, index)->pair->translate_from, "|"))
         border_print(
                 translation_incorrect,
                 valign('c', getmaxy(stdscr), 12, 15),
@@ -347,7 +383,7 @@ void menu_call_difficulty()
 {
     char pick;
     short point = 1;
-    iterations = file_word_pairs_count(filename);
+    iterations = wl_size(wordlist_form(filename));
 
     char difficulty1[] = "Вы можете выбрать количество слов для тренировки:";
 
@@ -530,20 +566,15 @@ void menu_call(enum Menu menu_type)
         break;
 
     case ModeEnToRu:
-        menu_call_result(
-                menu_call_type_en_to_ru(0, wordlist_form(filename, &order)));
+        menu_call_result(menu_call_type_en_to_ru(0, wordlist_form(filename)));
         break;
 
     case ModeRuToEn:
-        menu_call_result(
-                menu_call_type_ru_to_en(0, wordlist_form(filename, &order)));
+        menu_call_result(menu_call_type_ru_to_en(0, wordlist_form(filename)));
         break;
 
     case ModeTesting:
-        menu_call_result(menu_call_type_testing(
-                0,
-                wordlist_form(filename, &order),
-                file_word_pairs_count(filename)));
+        menu_call_result(menu_call_type_testing(0, wordlist_form(filename)));
         break;
 
     default:

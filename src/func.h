@@ -8,10 +8,22 @@ typedef struct {
     char translate_to[MAX_STRING_SIZE];
 } Words;
 
+typedef struct t_wordlist {
+    Words* pair;
+    struct t_wordlist* next;
+} Wordlist;
+
 int get_random_int(int min, int max);
+unsigned strcnt(const char* str, const char chr);
+char* extract_random_substr(const char* str, const char* delim);
+int substrcmp(const char* str1, const char* str2, const char* delim);
+
+Wordlist* wl_init();
+Wordlist* wl_append(Wordlist* root);
+Wordlist* wl_get(Wordlist* root, unsigned index);
+unsigned wl_size(Wordlist* root);
+
 int* random_order(const int min, const int max);
-int file_word_pairs_count(char* IFILE);
-Words* file_word_pairs_read(char* IFILE, const int wordnum);
-Words* wordlist_form(char* IFILE, int** order);
+Wordlist* wordlist_form(char* IFILE);
 
 #endif

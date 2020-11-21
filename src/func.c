@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /* get_random_int
  * Возвращает целое число в диапазоне от min до max (включая).
@@ -9,6 +10,119 @@
 int get_random_int(int min, int max)
 {
     return (double)rand() / (RAND_MAX + 1.0) * (max - min + 1) + min;
+}
+
+/* strcnt
+ * Считает число вхождений некоего символа в строке
+ */
+unsigned strcnt(const char* str, const char chr)
+{
+    unsigned counter = 0;
+    while (*str != '\0') {
+        if (*str == chr) {
+            counter++;
+        }
+
+        str++;
+    }
+    return counter;
+}
+
+/* extract_random_substr
+ * Извлекает случайную подстроку, разделенную неким delim
+ */
+char* extract_random_substr(const char* str, const char* delim)
+{
+    char* strcopy = malloc(MAX_STRING_SIZE * sizeof(char));
+    strcpy(strcopy, str);
+
+    if (strcnt(str, *delim) == 0)
+        return strcopy;
+
+    unsigned chosen = get_random_int(0, strcnt(str, *delim));
+    char* pointer = strtok(strcopy, delim);
+    for (unsigned i = 0; i < chosen; i++) {
+        pointer = strtok(NULL, delim);
+    }
+
+    return pointer;
+}
+
+/* substrcmp
+ * Проверяет, входит ли str1 в str2 как подстрока
+ * Возвращает 0, если да; 1 / -1, если нет
+ */
+int substrcmp(const char* str1, const char* str2, const char* delim)
+{
+    if (strcnt(str2, *delim) == 0)
+        return strcmp(str1, str2);
+
+    char* strcopy = malloc(MAX_STRING_SIZE * sizeof(char));
+    strcpy(strcopy, str2);
+    char* pointer = strtok(strcopy, delim);
+
+    while (pointer != NULL) {
+        if (!strcmp(str1, pointer)) {
+            return 0;
+        }
+        pointer = strtok(NULL, delim);
+    }
+
+    return 1;
+}
+
+/* wl_init
+ * Инициализирует список
+ */
+Wordlist* wl_init()
+{
+    Wordlist* root = NULL;
+    root = malloc(sizeof(Wordlist));
+    root->pair = malloc(sizeof(Words));
+    root->next = NULL;
+    return root;
+}
+
+/* wl_append
+ * Добавляет в конец списка элемент и возвращает его
+ */
+Wordlist* wl_append(Wordlist* root)
+{
+    if (root == NULL) {
+        root = wl_init();
+        return root;
+    }
+
+    Wordlist* current = root;
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = wl_init();
+    return current->next;
+}
+
+/* wl_get
+ * Получает элемент по индексу в списке и возвращает этот элемент
+ */
+Wordlist* wl_get(Wordlist* root, unsigned index)
+{
+    Wordlist* current = root;
+    for (unsigned i = 0; (i < index) && (current != NULL); i++) {
+        current = current->next;
+    }
+    return current;
+}
+
+/* wl_size
+ * Измерение длины списка и ее вывод
+ */
+unsigned wl_size(Wordlist* root)
+{
+    unsigned counter = 0;
+    for (Wordlist* current = root; current != NULL;
+         current = current->next, counter++)
+        ;
+    return counter;
 }
 
 /* random_order
@@ -43,60 +157,96 @@ int* random_order(const int min, const int max)
     return temp_arr;
 }
 
-/* file_word_pairs_count
- * Считывает пары слов в списке и возвращает их количество.
- */
-int file_word_pairs_count(char* IFILE)
-{
-    int wordnum = 0;
-    Words* nulwords = malloc(sizeof(Words));
-    FILE* f;
-    if ((f = fopen(IFILE, "r")) == NULL) {
-        perror("fopen");
-        exit(1);
-    }
-
-    while (fscanf(f, "%s %s", nulwords->translate_from, nulwords->translate_to)
-           == 2)
-        wordnum++;
-
-    fclose(f);
-    return wordnum;
-}
-
-/* file_word_pairs_read
- * Читает пары слов из списка и заносит их в массив пар слов words.
- */
-Words* file_word_pairs_read(char* IFILE, const int wordnum)
-{
-    Words* wordlist = malloc(wordnum * sizeof(Words));
-    if (wordlist == NULL)
-        return NULL;
-
-    FILE* f;
-    if ((f = fopen(IFILE, "r")) == NULL) {
-        perror("fopen");
-        exit(1);
-    }
-
-    for (size_t i = 0; i < wordnum; i++)
-        fscanf(f,
-               "%s %s",
-               ((wordlist[i]).translate_from),
-               ((wordlist[i]).translate_to));
-
-    fclose(f);
-    return wordlist;
-}
-
 /* wordlist_form
- * Формирует список пар слов с помощью file_word_pairs_read и
- * file_word_pairs_count, возвращая указатель на него.
+ * Считывает пары слов в файле списка и возвращает их список
  */
-Words* wordlist_form(char* IFILE, int** order)
+Wordlist* wordlist_form(char* IFILE)
 {
-    const int wordnum = file_word_pairs_count(IFILE);
-    (*order) = random_order(0, wordnum - 1);
+    unsigned flag = 0;
 
-    return file_word_pairs_read(IFILE, wordnum);
+    Wordlist* root = wl_init();
+    int start;
+    start = 0;
+    Words* curpair = NULL;
+
+    FILE* f;
+    if ((f = fopen(IFILE, "r")) == NULL) {
+        perror("fopen");
+        exit(1);
+    }
+    char c;
+    while ((c = fgetc(f)) != EOF) {
+        switch (c) {
+        case ':':
+            if (flag == 3) {
+                break;
+            }
+
+            flag = 1;
+            if (curpair == NULL) {
+                curpair = root->pair;
+            } else {
+                curpair = wl_append(root)->pair;
+            }
+            break;
+
+        case '=':
+            if (flag == 3) {
+                break;
+            }
+
+            flag = 2;
+            curpair->translate_from[start] = '\0';
+            start = 0;
+            break;
+
+        case ';':
+            if (flag == 3) {
+                break;
+            }
+
+            flag = 0;
+            curpair->translate_to[start] = '\0';
+            start = 0;
+            break;
+
+        case '/':
+            if (flag == 0) {
+                flag = 3;
+            }
+            break;
+
+        case '.':
+            if (flag == 3) {
+                break;
+            }
+            fclose(f);
+            return root;
+
+        default:
+            if (flag == 1) {
+                if ((c != ' ') && (c != '\n')) {
+                    if (c == '_') {
+                        c = ' ';
+                    }
+                    curpair->translate_from[start++] = c;
+                }
+            } else if (flag == 2) {
+                if ((c != ' ') && (c != '\n')) {
+                    if (c == '_') {
+                        c = ' ';
+                    }
+                    curpair->translate_to[start++] = c;
+                }
+            } else if (flag == 3) {
+                if (c == '\n') {
+                    flag = 0;
+                }
+            }
+            break;
+        }
+    }
+
+    fclose(f);
+    return root;
 }
