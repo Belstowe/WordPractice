@@ -105,7 +105,11 @@ Wordlist* file_word_pairs_read(char* IFILE)
         char c;
         while ((c = fgetc(f)) !=EOF){
             switch (c) {
-                case ':': 
+                case ':':
+                    if (flag == 3) {
+                        break;
+                    }
+
                     flag = 1;
                     if (curpair == NULL){
                         curpair = root->pair;
@@ -116,19 +120,35 @@ Wordlist* file_word_pairs_read(char* IFILE)
                 break;
                 
                 case '=':
+                    if (flag == 3) {
+                        break;
+                    }
+
                     flag = 2;
                     curpair->translate_from[start]='\0';
                     start=0;
                 break;
 
                 case ';':
-                    
+                    if (flag == 3) {
+                        break;
+                    }
+
                     flag = 0;
                     curpair->translate_to[start]='\0';
                     start=0;
                 break;
 
+                case '/':
+                    if (flag == 0) {
+                        flag = 3;
+                    }
+                break;
+
                 case '.':
+                    if (flag == 3) {
+                        break;
+                    }
                     fclose(f);
                     return root;
 
@@ -143,6 +163,11 @@ Wordlist* file_word_pairs_read(char* IFILE)
                         if ((c != ' ') && (c != '\n')) {
                             
                             curpair->translate_to[start++] = c;
+                        }
+                    }
+                    else if (flag == 3) {
+                        if (c == '\n') {
+                            flag=0;
                         }
                     }
                 break;
