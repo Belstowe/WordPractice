@@ -15,7 +15,7 @@ int get_random_int(int min, int max)
 /* strcnt
  * Считает число вхождений некоего символа в строке
  */
-unsigned strcnt(char* str, char chr)
+unsigned strcnt(const char* str, const char chr)
 {
     unsigned counter = 0;
     while (*str != '\0') {
@@ -31,14 +31,15 @@ unsigned strcnt(char* str, char chr)
 /* extract_random_substr
  * Извлекает случайную подстроку, разделенную неким delim
  */
-char* extract_random_substr(char* str, char* delim)
+char* extract_random_substr(const char* str, const char* delim)
 {
-    if (strcnt(str, *delim) == 0)
-        return str;
-
-    unsigned chosen = get_random_int(0, strcnt(str, *delim));
     char* strcopy = malloc(MAX_STRING_SIZE * sizeof(char));
     strcpy(strcopy, str);
+
+    if (strcnt(str, *delim) == 0)
+        return strcopy;
+
+    unsigned chosen = get_random_int(0, strcnt(str, *delim));
     char* pointer = strtok(strcopy, delim);
     for (unsigned i = 0; i < chosen; i++) {
         pointer = strtok(NULL, delim);
@@ -51,7 +52,7 @@ char* extract_random_substr(char* str, char* delim)
  * Проверяет, входит ли str1 в str2 как подстрока
  * Возвращает 0, если да; 1 / -1, если нет
  */
-int substrcmp(char* str1, char* str2, char* delim)
+int substrcmp(const char* str1, const char* str2, const char* delim)
 {
     if (strcnt(str2, *delim) == 0)
         return strcmp(str1, str2);
@@ -70,18 +71,33 @@ int substrcmp(char* str1, char* str2, char* delim)
     return 1;
 }
 
+/* wl_init
+ * Инициализирует список
+ */
+Wordlist* wl_init()
+{
+    Wordlist* root = NULL;
+    root = malloc(sizeof(Wordlist));
+    root->pair = malloc(sizeof(Words));
+    root->next = NULL;
+    return root;
+}
+
 /* wl_append
  * Добавляет в конец списка элемент и возвращает его
  */
 Wordlist* wl_append(Wordlist* root)
 {
+    if (root == NULL) {
+        root = wl_init();
+        return root;
+    }
+
     Wordlist* current = root;
     while (current->next != NULL) {
         current = current->next;
     }
-    current->next = malloc(sizeof(Wordlist));
-    current->next->pair = malloc(sizeof(Words));
-    current->next->next = NULL;
+    current->next = wl_init();
     return current->next;
 }
 
@@ -148,9 +164,7 @@ Wordlist* wordlist_form(char* IFILE)
 {
     unsigned flag = 0;
 
-    Wordlist* root = malloc(sizeof(Wordlist));
-    root->pair = malloc(sizeof(Words));
-    root->next = NULL;
+    Wordlist* root = wl_init();
     int start;
     start = 0;
     Words* curpair = NULL;
