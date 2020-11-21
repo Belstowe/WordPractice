@@ -39,8 +39,11 @@ void menu_call_resolution(enum Menu pending_menu)
 
 unsigned menu_call_type_testing(unsigned iter, Wordlist* wordlist)
 {   
-    if (iter == iterations)
+    if (iter == iterations) {
+        free(order);
+        order =NULL;
         return 0;
+    }
 
     if(order==NULL){
         order = random_order(0, wl_size(wordlist)-1);
@@ -163,8 +166,11 @@ void menu_call_result(unsigned correct_answers)
  */
 unsigned menu_call_type_en_to_ru(unsigned iter, Wordlist* wordlist)
 {
-    if (iter == iterations)
+    if (iter == iterations) {
+        free(order);
+        order =NULL;
         return 0;
+    }
 
     if(order==NULL){
         order = random_order(0, wl_size(wordlist)-1);
@@ -244,8 +250,11 @@ unsigned menu_call_type_en_to_ru(unsigned iter, Wordlist* wordlist)
  */
 unsigned menu_call_type_ru_to_en(unsigned iter, Wordlist* wordlist)
 {
-    if (iter == iterations)
+    if (iter == iterations) {
+        free(order);
+        order =NULL;
         return 0;
+    }
 
     if(order==NULL){
         order = random_order(0, wl_size(wordlist)-1);
