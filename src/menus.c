@@ -212,7 +212,7 @@ unsigned menu_call_type_en_to_ru(unsigned iter, Wordlist* wordlist)
 
     move(valign('c', getmaxy(stdscr), 9, 15),
          halign(translation2, 'c', getmaxx(stdscr) + 1));
-    scanw("%s", input);
+    getstr(input);
 
     curs_set(0);
     if (substrcmp(input, wl_get(wordlist, index)->pair->translate_to, "|"))
@@ -296,7 +296,7 @@ unsigned menu_call_type_ru_to_en(unsigned iter, Wordlist* wordlist)
 
     move(valign('c', getmaxy(stdscr), 9, 15),
          halign(translation2, 'c', getmaxx(stdscr) + 1));
-    scanw("%s", input);
+    getstr(input);
 
     curs_set(0);
     if (substrcmp(input, wl_get(wordlist, index)->pair->translate_from, "|"))
