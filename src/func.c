@@ -155,13 +155,17 @@ Wordlist* file_word_pairs_read(char* IFILE)
                 default :
                     if (flag == 1) {
                         if ((c != ' ') && (c != '\n')) {
-                            
+                            if (c == '_') {
+                                c = ' ';
+                            }
                             curpair->translate_from[start++] = c;
                         }
                     }
                     else if (flag == 2) {
                         if ((c != ' ') && (c != '\n')) {
-                            
+                            if (c == '_') {
+                                c = ' ';
+                            }
                             curpair->translate_to[start++] = c;
                         }
                     }
