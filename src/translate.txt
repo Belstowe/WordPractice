@@ -1,3 +1,8 @@
+: illuminate = излучать;
+: test = тест | испытание | испытать | тестировать;
+: solid|hard = твёрдый|твердый;
+: bite_the_bullet = стиснуть_зубы.
+
 again опять
 already уже
 also также
