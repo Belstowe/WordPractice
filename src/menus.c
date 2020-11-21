@@ -63,7 +63,8 @@ unsigned menu_call_type_testing(unsigned iter, Wordlist* wordlist)
     sprintf(translation1,
             "%d:\n%s",
             iter + 1,
-            extract_random_substr(wl_get(wordlist, index)->pair->translate_from, "|"));
+            extract_random_substr(
+                    wl_get(wordlist, index)->pair->translate_from, "|"));
 
     char translation2[] = "Выберите номер правильного перевода:";
 
