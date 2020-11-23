@@ -498,7 +498,8 @@ void menu_call_main()
 {
     char pick;
 
-    char standard_file_warning[] = "(Используется автоматически сгенерированный список)";
+    char standard_file_warning[]
+            = "(Используется автоматически сгенерированный список)";
     char welcome1[]
             = "МЕНЮ\n \n"
               "Добро пожаловать в WordPractice, программу для заучивания "
@@ -510,13 +511,13 @@ void menu_call_main()
 
     if (auto_gen_flag) {
         border_print(
-            standard_file_warning,
-            valign('c', getmaxy(stdscr), 0, 15),
-            0,
-            valign('c', getmaxy(stdscr), 2, 15),
-            getmaxx(stdscr),
-            'c',
-            'u');
+                standard_file_warning,
+                valign('c', getmaxy(stdscr), 0, 15),
+                0,
+                valign('c', getmaxy(stdscr), 2, 15),
+                getmaxx(stdscr),
+                'c',
+                'u');
     }
     border_print(
             welcome1,

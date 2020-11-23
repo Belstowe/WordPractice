@@ -8,7 +8,7 @@
 #include <string.h>
 #include <time.h>
 
-char* filename; //Название файла со списком
+char* filename;             //Название файла со списком
 char auto_gen_flag = false; // Флаг проставляемый, когда вместо
                             // существующего генерируется шаблонный список
 
