@@ -1,3 +1,4 @@
+#include "default.h"
 #include "menus.h"
 
 #include <locale.h>
@@ -7,7 +8,9 @@
 #include <string.h>
 #include <time.h>
 
-char* filename; //Название файла со списком
+char* filename;             //Название файла со списком
+char auto_gen_flag = false; // Флаг проставляемый, когда вместо
+                            // существующего генерируется шаблонный список
 
 /*
  * Приложение имеет опциональный аргумент для названия файла с переводами.
@@ -38,10 +41,21 @@ int main(int argc, char* argv[])
 
     FILE* f = fopen(filename, "r");
     if (f == NULL) {
-        printf("ОШИБКА. Проблемы с доступом к файлу '%s'. Существует ли он "
-               "вообще?\n",
-               filename);
-        return -1;
+        if (argc == 1) { //Если не указывался файл, то создаем свой
+            f = fopen(filename, "w");
+            if (f == NULL) { //Если доступа нет
+                printf("Ошибка при генерации шаблонного списка");
+                return -1;
+            }
+            fprintf(f, "%s", default_list); // Берем стандартный список из
+                                            // default.h и записываем
+            auto_gen_flag = true;
+        } else {
+            printf("ОШИБКА. Проблемы с доступом к файлу '%s'. Существует ли он "
+                   "вообще?\n",
+                   filename);
+            return -1;
+        }
     }
     fclose(f);
 
@@ -52,6 +66,8 @@ int main(int argc, char* argv[])
 
     menu_call(Main); // Вызываем главное меню
 
+    if (auto_gen_flag) // Удаляем сгенерированный файл
+        remove(filename);
     endwin(); // После выхода из цикла меню переходим в обычный режим работы с
               // консолью и выходим
     return 0;
