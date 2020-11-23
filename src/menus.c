@@ -9,6 +9,7 @@
 #define MIN_HEIGHT 15
 
 extern char* filename;
+extern char auto_gen_flag;
 int iterations = 0; // Количество "номеров" в задании
 int* order = NULL;
 enum Menu gamemode = Exit;
@@ -497,6 +498,7 @@ void menu_call_main()
 {
     char pick;
 
+    char standard_file_warning[] = "(Используется автоматически сгенерированный список)";
     char welcome1[]
             = "МЕНЮ\n \n"
               "Добро пожаловать в WordPractice, программу для заучивания "
@@ -506,9 +508,19 @@ void menu_call_main()
               "1. Начать!\n"
               "2. Выход.\n";
 
+    if (auto_gen_flag) {
+        border_print(
+            standard_file_warning,
+            valign('c', getmaxy(stdscr), 0, 15),
+            0,
+            valign('c', getmaxy(stdscr), 2, 15),
+            getmaxx(stdscr),
+            'c',
+            'u');
+    }
     border_print(
             welcome1,
-            valign('c', getmaxy(stdscr), 0, 15),
+            valign('c', getmaxy(stdscr), 3, 15),
             0,
             valign('c', getmaxy(stdscr), 10, 15),
             getmaxx(stdscr),
